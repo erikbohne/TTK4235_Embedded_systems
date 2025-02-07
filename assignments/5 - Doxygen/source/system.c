@@ -1,3 +1,8 @@
+/**
+ * @file system.c
+ * @brief This file contains the implementation of the system object.
+ */
+
 #include "system.h"
 #include <stdlib.h>
 #include <string.h>

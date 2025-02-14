@@ -10,7 +10,9 @@ int elevator_startup() {
 
     int floor = elevio_floorSensor();
 
-    printf("Floor found %d", floor);
+    printf("%d", floor);
+
+    printf("Start up complete :)");
 
     return 1;
 };

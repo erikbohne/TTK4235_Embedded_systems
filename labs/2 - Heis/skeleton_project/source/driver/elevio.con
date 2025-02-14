@@ -1,0 +1,4 @@
+elevator_hardware.con
+
+--com_ip                localhost
+--com_port              15657

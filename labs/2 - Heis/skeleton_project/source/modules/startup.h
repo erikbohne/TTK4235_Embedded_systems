@@ -10,3 +10,4 @@ typedef enum {
 
 
 int elevator_startup();
+void clear_buttons();

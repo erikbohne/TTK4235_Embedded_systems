@@ -1,7 +1,7 @@
 #include <time.h>
 
 #include "../driver/elevio.h"
-#include "modules.h"
+#include "startup.h"
 
 /**
 * @brief Hei på deg
@@ -11,6 +11,8 @@ int elevator_startup() {
     printf("Startup up elevator 3000X-SuperG... \n");
 
     int floor = elevio_floorSensor();
+
+    clear_buttons();
 
     if(floor != 0){
         printf("Elevator at no floor, driving downwards... \n");
@@ -33,3 +35,12 @@ int elevator_startup() {
 
     return 1;
 };
+
+void clear_buttons(){
+    for(int f = 0; f < N_FLOORS; f++){
+        for(int b = 0; b < N_BUTTONS; b++){
+            elevio_buttonLamp(f, b, 0);
+        }
+    }
+}
+

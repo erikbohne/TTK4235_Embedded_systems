@@ -18,6 +18,7 @@
 # Tilstand
 
 ## Variabler
+* Sate: Tilstandsmaskines staus
 * Floor: har kontroll på etasjen
 * Stop_next: om man stopper på neste stopp
 * Open_door: om døren er åpen

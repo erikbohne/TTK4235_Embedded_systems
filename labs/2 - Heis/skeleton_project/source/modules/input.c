@@ -15,7 +15,7 @@ void checkForInput(state_data *data){
     }
 }
 
-void turn_off_input(state_data *data, int floor){
+void turnOffButtonLamps(state_data *data, int floor){
     for(int button = 0; button<3; button++){
         data->btnStates[floor][button] = 0;
         elevio_buttonLamp(floor, button, 0);

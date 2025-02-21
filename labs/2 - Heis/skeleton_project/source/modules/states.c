@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "../driver/elevio.h"
+#include "input.h"
 
 void standing_still(state_data *data, int floor) {
     int i;
@@ -44,9 +45,7 @@ void driving_up(state_data *data, int floor){
             data->btnStates[floor][BUTTON_HALL_UP] = 0;
             printf("Stopped at floor %d\n", floor);
             elevio_motorDirection(DIRN_STOP);
-            elevio_buttonLamp(floor, BUTTON_HALL_UP, 0);
-            elevio_buttonLamp(floor, BUTTON_HALL_DOWN, 0);
-            elevio_buttonLamp(floor, BUTTON_CAB, 0);
+            turnOffButtonLamps(data, floor);
             open_door(data);
             data->state = STANDING_STILL;
         }
@@ -55,6 +54,7 @@ void driving_up(state_data *data, int floor){
     if(floor == 3){
         printf("Stopping going up\n");
         elevio_motorDirection(DIRN_STOP);
+        turnOffButtonLamps(data, floor);
         data->state = STANDING_STILL;
     }
 }
@@ -65,9 +65,7 @@ void driving_down(state_data *data, int floor){
             data->btnStates[floor][BUTTON_HALL_DOWN] = 0;
             printf("Stopped at floor %d\n", floor);
             elevio_motorDirection(DIRN_STOP);
-            elevio_buttonLamp(floor, BUTTON_HALL_UP, 0);
-            elevio_buttonLamp(floor, BUTTON_HALL_DOWN, 0);
-            elevio_buttonLamp(floor, BUTTON_CAB, 0);
+            turnOffButtonLamps(data, floor);
             open_door(data);
             data->state = STANDING_STILL;
             return;
@@ -76,6 +74,7 @@ void driving_down(state_data *data, int floor){
     if(floor == 0){
         printf("Stopping going down\n");
         elevio_motorDirection(DIRN_STOP);
+        turnOffButtonLamps(data, floor);
         data->state = STANDING_STILL;
     }
 }

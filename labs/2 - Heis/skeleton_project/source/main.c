@@ -24,13 +24,13 @@ int main(){
     elevio_init();
     
 
-    State state = STANDING_STILL;
+    state_data sData = {STANDING_STILL};
     int btnStates[4][3] = {{0,0,0},{0,0,0},{0,0,0},{0,0,0}};
     int destination = NULL;
     int floor = NULL;
     // int direction;
 
-    printf("State: %u \n\n", state);
+    printf("State: %u \n\n", sData.state);
 
     elevator_startup();
 
@@ -47,9 +47,15 @@ int main(){
             }
         }
 
-
-
-
+        if(sData.state == STANDING_STILL){
+            standing_still(btnStates, &sData, floor);
+        }
+        else if(sData.state == DRIVING_UP){
+            driving_up(btnStates, &sData, floor);
+        }
+        else if(sData.state == DRIVING_DOWN){
+            driving_down(btnStates, &sData, floor);
+        }
        
         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
     }

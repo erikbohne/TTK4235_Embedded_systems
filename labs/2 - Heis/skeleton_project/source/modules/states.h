@@ -7,10 +7,10 @@ typedef enum {
     DRIVING_DOWN = 3
 } State;
 
-struct state_data{
+typedef struct state_data {
     State state;
-};
+} state_data;
 
-void standing_still(int btnStates[4][3], state_data);
-void driving_up(int btnStates[4][3],state_data );
-void driving_down(int btnStates[4][3] ,state_data);
+void standing_still(int btnStates[4][3], state_data *data, int floor);
+void driving_up(int btnStates[4][3], state_data *data, int floor);
+void driving_down(int btnStates[4][3], state_data *data, int floor);

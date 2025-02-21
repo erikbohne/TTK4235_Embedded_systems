@@ -1,9 +1,9 @@
 #include "states.h"
 #include "../driver/elevio.h"
 
-void standing_still(int btnStates[4][3], state_data *data, int floor){
-    if(btnStates[3][1] == 1){
-        btnStates[3][1] = 0;
+void standing_still(state_data *data, int floor){
+    if(sData->btnStates[3][1] == 1){
+        sData->btnStates[3][1] = 0;
         printf("Going up\n");
         elevio_motorDirection(DIRN_UP);
         data->state = DRIVING_UP;
@@ -16,16 +16,16 @@ void standing_still(int btnStates[4][3], state_data *data, int floor){
     }
 }
 
-void driving_up(int btnStates[4][3], state_data *data, int floor){
-    if(floor == 3){
+void driving_up(state_data *data, int floor){
+    if(data->floor == 3){
         printf("Stopping going up\n");
         elevio_motorDirection(DIRN_STOP);
         data->state = STANDING_STILL;
     }
 }
 
-void driving_down(int btnStates[4][3], state_data *data, int floor){
-    if(floor == 0){
+void driving_down(state_data *data, int floor){
+    if(data.floor == 0){
         printf("Stopping going down\n");
         elevio_motorDirection(DIRN_STOP);
         data->state = STANDING_STILL;

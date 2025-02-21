@@ -24,10 +24,10 @@ int main(){
     elevio_init();
     
 
-    state_data sData = {STANDING_STILL};
-    int btnStates[4][3] = {{0,0,0},{0,0,0},{0,0,0},{0,0,0}};
-    int destination = NULL;
-    int floor = NULL;
+    state_data sData = {STANDING_STILL, {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}};
+    int floor = -1;
+
+    // int destination = NULL;
     // int direction;
 
     printf("State: %u \n\n", sData.state);
@@ -36,25 +36,26 @@ int main(){
 
     while(1){
         floor = elevio_floorSensor();
-
+        
+        //TODO: Test kode. Må over til input.c
         for(int f = 0; f < N_FLOORS; f++){
             for(int b = 0; b < N_BUTTONS; b++){
                 int btnbtnStates = elevio_callButton(f, b);
                 if(btnbtnStates){
-                    btnStates[f][b] = 1;
+                    sData.btnStates[f][b] = 1;
                     elevio_buttonLamp(f, b, 1);
                 }
             }
         }
 
         if(sData.state == STANDING_STILL){
-            standing_still(btnStates, &sData, floor);
+            standing_still(&sData, floor);
         }
         else if(sData.state == DRIVING_UP){
-            driving_up(btnStates, &sData, floor);
+            driving_up(&sData, floor);
         }
         else if(sData.state == DRIVING_DOWN){
-            driving_down(btnStates, &sData, floor);
+            driving_down(&sData, floor);
         }
        
         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);

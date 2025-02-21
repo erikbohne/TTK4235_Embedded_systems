@@ -9,8 +9,9 @@ typedef enum {
 
 typedef struct state_data {
     State state;
+    int btnStates[4][3];
 } state_data;
 
-void standing_still(int btnStates[4][3], state_data *data, int floor);
-void driving_up(int btnStates[4][3], state_data *data, int floor);
-void driving_down(int btnStates[4][3], state_data *data, int floor);
+void standing_still(state_data *data, int floor);
+void driving_up(state_data *data, int floor);
+void driving_down(state_data *data, int floor);

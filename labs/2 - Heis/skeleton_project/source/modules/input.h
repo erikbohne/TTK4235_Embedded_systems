@@ -1,0 +1,1 @@
+void checkForInput(state_data *data);

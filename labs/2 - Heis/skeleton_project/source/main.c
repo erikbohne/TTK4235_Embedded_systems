@@ -12,7 +12,7 @@ int main(){
     elevio_init();
     
 
-    state_data sData = {STANDING_STILL, {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}};
+    state_data sData = {STANDING_STILL, {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}, CURRENT_DIR_DOWN};
     int floor = -1;
 
     // int destination = NULL;

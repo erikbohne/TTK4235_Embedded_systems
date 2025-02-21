@@ -5,35 +5,29 @@
 #include "input.h"
 
 void standing_still(state_data *data, int floor) {
+
+    if dir = op
+        if check alle etasjer over(alle knapper)
+             gåt til btn.cab || btn.opp
+        if 
+            gåt ned om ikke noe opp, bytt dir
+
+    if dir = ned 
+        if check alle etasjer ned
+            gåp til de
+        if 
+            evt gå opp, bytt dir 
+
     int i;
     // Check if any up hall call or cab call is pressed on floors above the current floor
     for (i = floor + 1; i <= 3; i++) {
         if (data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
-            data->btnStates[i][BUTTON_HALL_UP] = 0;
-            data->btnStates[i][BUTTON_CAB] = 0;
             printf("Going up from floor %d to %d\n", floor, i);
             elevio_motorDirection(DIRN_UP);
             data->state = DRIVING_UP;
             return;
         }
-    }
-    // Check if any down hall call or cab call is pressed on floors below the current floor
-    for (i = floor - 1; i >= 0; i--) {
-        if (data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
-            data->btnStates[i][BUTTON_HALL_DOWN] = 0;
-            data->btnStates[i][BUTTON_CAB] = 0;
-            printf("Going down from floor %d to %d\n", floor, i);
-            elevio_motorDirection(DIRN_DOWN);
-            data->state = DRIVING_DOWN;
-            return;
-        }
-    }
-}
-
-void open_door(state_data *data){
-    printf("Opening door\n");
-    elevio_doorOpenLamp(1);
-    sleep(3);
+    } data->btnStates[i][BUTTON_CAB] == 1
     elevio_doorOpenLamp(0);
     printf("Closing door\n");
 }

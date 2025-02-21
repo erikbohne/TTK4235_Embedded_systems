@@ -7,9 +7,17 @@ typedef enum {
     DRIVING_DOWN = 3
 } State;
 
+typedef enum { 
+    CURRENT_DIR_UP = 0,
+    CURRENT_DIR_DOWN = 1,
+} Direction;
+
+
+
 typedef struct state_data {
     State state;
     int btnStates[4][3];
+    Direction dir;
 } state_data;
 
 void standing_still(state_data *data, int floor);

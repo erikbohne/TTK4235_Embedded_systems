@@ -1,4 +1,5 @@
 #include <time.h>
+#include <stdio.h>
 
 #include "../driver/elevio.h"
 #include "startup.h"

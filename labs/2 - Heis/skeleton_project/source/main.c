@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <time.h>
+#include "modules/states.h"
 #include "driver/elevio.h"
 #include "modules/startup.h"
 
@@ -27,6 +28,7 @@ int main(){
     int btnStates[4][3] = {{0,0,0},{0,0,0},{0,0,0},{0,0,0}};
     int destination = NULL;
     int floor = NULL;
+    // int direction;
 
     printf("State: %u \n\n", state);
 
@@ -40,56 +42,15 @@ int main(){
                 int btnbtnStates = elevio_callButton(f, b);
                 if(btnbtnStates){
                     btnStates[f][b] = 1;
-                    printf("%d \n",btnStates[f][b]);
                     elevio_buttonLamp(f, b, 1);
                 }
             }
         }
 
 
-        // //Consept state machine
-        if(state == STANDING_STILL){
-
-            //Transistion
-            if(btnStates[3][1] == 1){
-                btnStates[3][1] = 0;
-                printf("Going up \n");
-                elevio_motorDirection(DIRN_UP);
-                state = DRIVING_UP;
-            }
-
-            if(btnStates[0][0] == 1){
-                btnStates[0][0] = 0;
-                printf("Going down \n");
-                elevio_motorDirection(DIRN_DOWN);
-                state = DRIVING_DOWN;
-            }
-
-           
-            
-        }
-
-        if(state == DRIVING_UP){
-            if(floor == 3){
-                printf("Stopping going up \n");
-                elevio_motorDirection(DIRN_STOP);
-                state = STANDING_STILL;
-                
-            }
-        }
-
-        if(state == DRIVING_DOWN){
-            if(floor == 0){
-                printf("Stopping going down \n");
-                elevio_motorDirection(DIRN_STOP);
-                state = STANDING_STILL;
-                
-            }
-        }
 
 
-
-    
+       
         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
     }
 

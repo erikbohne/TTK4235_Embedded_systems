@@ -36,7 +36,10 @@ int main(){
 
     while(1){
         floor = elevio_floorSensor();
-        elevio_floorIndicator(floor);
+        if(floor >= 0){
+            elevio_floorIndicator(floor);
+        }
+        
         
         //TODO: Test kode. Må over til input.c
         for(int f = 0; f < N_FLOORS; f++){

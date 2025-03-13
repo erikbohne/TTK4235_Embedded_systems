@@ -28,6 +28,12 @@ int main(){
             elevio_floorIndicator(floor);
         }
         
+        // Check for obstruction first - this has highest priority
+        if (check_obstruction(&sData, floor)) {
+            // If obstruction is active, continue to next iteration
+            nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+            continue;
+        }
         
         checkForInput(&sData);
 

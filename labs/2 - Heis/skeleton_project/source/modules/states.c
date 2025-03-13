@@ -136,6 +136,13 @@ void standing_still(state_data *data, int floor) {
     }
 }
 
+void open_door(state_data *data) {
+    elevio_doorOpenLamp(1);
+    printf("Opening door\n");
+    sleep(3);
+    elevio_doorOpenLamp(0);
+    printf("Closing door\n");
+}
 
 void door_open_state(state_data *data, int floor) {
     // Check for stop button
@@ -161,15 +168,17 @@ void door_open_state(state_data *data, int floor) {
     // Check for obstruction
     if (elevio_obstruction()) {
         if (!obstruction_active) {
-            printf("Obstruction detected, keeping door open\n");
+            printf("Obstruction detected, keeping door open and clearing all orders\n");
             obstruction_active = 1;
+            clear_all_orders(data);  // Clear all orders when obstruction is detected
         }
-        door_opened_time = time(NULL); // Reset timer
+        elevio_doorOpenLamp(1);  // Ensure door stays open
+        // Don't reset timer, just keep door open indefinitely while obstruction is active
         return;
     } else if (obstruction_active) {
         printf("Obstruction cleared, starting door timer\n");
         obstruction_active = 0;
-        door_opened_time = time(NULL); // Reset timer
+        door_opened_time = time(NULL); // Reset timer after obstruction is cleared
     }
 
     // Check if door timer has expired
@@ -271,5 +280,31 @@ void driving_down(state_data *data, int floor){
         door_timer_active = 1;
         data->state = DOOR_OPEN;
     }
+}
+
+// Function to handle obstruction detection across all states
+int check_obstruction(state_data *data, int floor) {
+    // Only handle obstruction if we're at a floor
+    if (floor >= 0 && elevio_obstruction()) {
+        // Stop elevator and clear orders
+        elevio_motorDirection(DIRN_STOP);
+        clear_all_orders(data);
+        
+        // Open door if not already open
+        elevio_doorOpenLamp(1);
+        
+        // Update state
+        if (data->state != DOOR_OPEN) {
+            printf("Obstruction detected! Stopping elevator and opening door.\n");
+            data->state = DOOR_OPEN;
+            door_opened_time = time(NULL);
+            door_timer_active = 1;
+            obstruction_active = 1;
+        }
+        
+        return 1; // Obstruction is active
+    }
+    
+    return 0; // No obstruction
 }
 

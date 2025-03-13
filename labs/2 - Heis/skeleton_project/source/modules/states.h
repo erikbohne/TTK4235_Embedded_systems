@@ -26,3 +26,4 @@ void door_open_state(state_data *data, int floor);
 void driving_up(state_data *data, int floor);
 void driving_down(state_data *data, int floor);
 void clear_all_orders(state_data *data);
+int check_obstruction(state_data *data, int floor);

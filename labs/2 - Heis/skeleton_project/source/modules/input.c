@@ -3,6 +3,18 @@
 #include "states.h"
 
 void checkForInput(state_data *data){
+    // Check if obstruction is active - don't accept new orders if it is
+    if (elevio_obstruction() && data->state == DOOR_OPEN) {
+        // Just ignore button presses when obstruction is active
+        return;
+    }
+    
+    // Check if stop button is pressed - don't accept new orders if it is
+    if (elevio_stopButton()) {
+        return;
+    }
+    
+    // Normal order handling
     for(int f = 0; f < N_FLOORS; f++){
         for(int b = 0; b < N_BUTTONS; b++){
             int pressed = elevio_callButton(f, b);

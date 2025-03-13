@@ -136,12 +136,50 @@ void standing_still(state_data *data, int floor) {
     }
 }
 
-void open_door(state_data *data) {
-    elevio_doorOpenLamp(1);
-    printf("Opening door\n");
-    sleep(3);
-    elevio_doorOpenLamp(0);
-    printf("Closing door\n");
+
+void door_open_state(state_data *data, int floor) {
+    // Check for stop button
+    if (elevio_stopButton()) {
+        elevio_motorDirection(DIRN_STOP);
+        elevio_stopLamp(1);
+        clear_all_orders(data);
+        printf("STOP button pressed while door open. Keeping door open.\n");
+        
+        // Wait until stop button is released
+        while (elevio_stopButton()) {
+            nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+        }
+        
+        elevio_stopLamp(0);
+        printf("STOP button released. Resetting door timer.\n");
+        
+        // Reset door timer
+        door_opened_time = time(NULL);
+        return;
+    }
+
+    // Check for obstruction
+    if (elevio_obstruction()) {
+        if (!obstruction_active) {
+            printf("Obstruction detected, keeping door open\n");
+            obstruction_active = 1;
+        }
+        door_opened_time = time(NULL); // Reset timer
+        return;
+    } else if (obstruction_active) {
+        printf("Obstruction cleared, starting door timer\n");
+        obstruction_active = 0;
+        door_opened_time = time(NULL); // Reset timer
+    }
+
+    // Check if door timer has expired
+    if (door_timer_active && time(NULL) - door_opened_time >= 3) {
+        printf("Door timer expired, closing door\n");
+        elevio_doorOpenLamp(0);
+        door_timer_active = 0;
+        data->state = STANDING_STILL;
+        idle_message_printed = 0; // Reset the flag to allow one idle message after closing door
+    }
 }
 
 void door_open_state(state_data *data, int floor) {

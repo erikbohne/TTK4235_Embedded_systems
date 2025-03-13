@@ -46,6 +46,10 @@ int main(){
         case DRIVING_DOWN:
             driving_down(&sData, floor);
             break;
+            
+        case DOOR_OPEN:
+            door_open_state(&sData, floor);
+            break;
 
         default:
             printf("ERROR: Invalid state. ");

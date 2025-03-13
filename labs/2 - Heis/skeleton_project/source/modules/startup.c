@@ -5,35 +5,58 @@
 #include "startup.h"
 
 /**
-* @brief Hei på deg
+* @brief Initialize the elevator at startup by moving to a defined position
+* Ignores all orders and the stop button during initialization
+* @return 1 when initialization is complete
 */
 int elevator_startup() {
-
-    printf("Startup up elevator 3000X-SuperG... \n");
+    printf("Starting up elevator 3000X-SuperG... \n");
 
     int floor = elevio_floorSensor();
 
+    // Clear all button lamps
     clear_buttons();
 
-    if(floor != 0){
-        printf("Elevator at no floor, driving downwards... \n");
-        elevio_motorDirection(DIRN_DOWN);
+    // Check if we're already at a valid floor
+    if (floor >= 0) {
+        printf("Elevator is already at floor %d\n", floor);
+        elevio_floorIndicator(floor);
+        printf("Startup complete :) \n");
+        return 1;
     }
 
-    while(1){
-        floor = elevio_floorSensor();
+    // If we're not at a valid floor, drive down to find one
+    printf("Elevator not at a defined floor, driving downwards... \n");
+    elevio_motorDirection(DIRN_DOWN);
 
-        if(floor == 0){
+    while (1) {
+        // Ignore button presses during initialization
+        for (int f = 0; f < N_FLOORS; f++) {
+            for (int b = 0; b < N_BUTTONS; b++) {
+                if (elevio_callButton(f, b)) {
+                    // Ignore button press, do not set button lamp
+                    printf("Ignoring button press during initialization\n");
+                }
+            }
+        }
+
+        // Ignore stop button during initialization
+        if (elevio_stopButton()) {
+            printf("Ignoring stop button during initialization\n");
+        }
+
+        floor = elevio_floorSensor();
+        if (floor >= 0) {
             elevio_motorDirection(DIRN_STOP);
-            printf("Elevator is at bottom floor... \n");
+            elevio_floorIndicator(floor);
+            printf("Elevator is at floor %d\n", floor);
             break;
         }
 
         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
     }
 
-    printf("Start up complete :) \n");
-
+    printf("Startup complete :) \n");
     return 1;
 };
 

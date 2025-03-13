@@ -22,5 +22,7 @@ typedef struct state_data {
 
 void standing_still(state_data *data, int floor);
 void open_door(state_data *data);
+void door_open_state(state_data *data, int floor);
 void driving_up(state_data *data, int floor);
 void driving_down(state_data *data, int floor);
+void clear_all_orders(state_data *data);

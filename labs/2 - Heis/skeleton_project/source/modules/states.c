@@ -9,6 +9,7 @@
 static time_t door_opened_time = 0;
 static int door_timer_active = 0;
 static int obstruction_active = 0;
+static int idle_message_printed = 0; // Track if idle message was already printed
 
 // Clear all orders and turn off all button lights
 void clear_all_orders(state_data *data) {
@@ -57,6 +58,7 @@ void standing_still(state_data *data, int floor) {
         elevio_doorOpenLamp(1);
         door_opened_time = time(NULL);
         door_timer_active = 1;
+        idle_message_printed = 0; // Reset idle message flag when state changes
         printf("Opening door at floor %d for existing order\n", floor);
         return;
     }
@@ -69,6 +71,7 @@ void standing_still(state_data *data, int floor) {
                 printf("Going up from floor %d to %d\n", floor, i);
                 elevio_motorDirection(DIRN_UP);
                 data->state = DRIVING_UP;
+                idle_message_printed = 0; // Reset idle message flag
                 return;
             }
         }
@@ -127,16 +130,12 @@ void standing_still(state_data *data, int floor) {
 
     // If no orders are pending, close the door and remain idle.
     elevio_doorOpenLamp(0);
-    printf("No orders pending, remaining idle at floor %d\n", floor);
+    if (!idle_message_printed) {
+        printf("No orders pending, remaining idle at floor %d\n", floor);
+        idle_message_printed = 1;
+    }
 }
 
-void open_door(state_data *data) {
-    elevio_doorOpenLamp(1);
-    printf("Opening door\n");
-    sleep(3);
-    elevio_doorOpenLamp(0);
-    printf("Closing door\n");
-}
 
 void door_open_state(state_data *data, int floor) {
     // Check for stop button
@@ -179,6 +178,7 @@ void door_open_state(state_data *data, int floor) {
         elevio_doorOpenLamp(0);
         door_timer_active = 0;
         data->state = STANDING_STILL;
+        idle_message_printed = 0; // Reset the flag to allow one idle message after closing door
     }
 }
 

@@ -21,24 +21,3 @@ void turnOffButtonLamps(state_data *data, int floor){
     }
 }
 
-//Ikke i bruk enda
-int getNextUp(int buttons[4][3], int current){
-    for(int f = current; f < N_FLOORS; f++){
-        if(buttons[f][BUTTON_HALL_UP] == 1 || buttons[f][BUTTON_CAB]) {
-            return f;
-            }
-           
-        }
-    printf("Noe requests up.");
-    return -1;
-}   
-
-int getNextDown(int buttons[4][3], int current){
-    for(int f = current; f > 0; f--){
-        if(buttons[f][BUTTON_HALL_DOWN] == 1 || buttons[f][BUTTON_CAB]){
-            return f;
-            }
-        }
-    printf("No requests down");
-    return -1;
-}

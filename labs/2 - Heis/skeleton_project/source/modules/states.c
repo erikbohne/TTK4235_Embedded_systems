@@ -75,9 +75,9 @@ void standing_still(state_data *data, int floor) {
                 return;
             }
         }
-        // If no orders above, see if there are any down orders.
+        // If no orders above, check for any orders below (both UP and DOWN hall calls)
         for (i = floor - 1; i >= 0; i--) {
-            if (data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
+            if (data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
                 printf("Changing direction to down from floor %d to %d\n", floor, i);
                 elevio_motorDirection(DIRN_DOWN);
                 data->state = DRIVING_DOWN;
@@ -95,9 +95,9 @@ void standing_still(state_data *data, int floor) {
                 return;
             }
         }
-        // If no orders below, check for orders above.
+        // If no orders below, check for any orders above (both UP and DOWN hall calls)
         for (i = floor + 1; i < N_FLOORS; i++) {
-            if (data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
+            if (data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
                 printf("Changing direction to up from floor %d to %d\n", floor, i);
                 elevio_motorDirection(DIRN_UP);
                 data->state = DRIVING_UP;

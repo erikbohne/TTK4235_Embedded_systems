@@ -15,9 +15,6 @@ int main(){
     state_data sData = {STANDING_STILL, {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}, CURRENT_DIR_DOWN};
     int floor = -1;
 
-    // int destination = NULL;
-    // int direction;
-
     printf("State: %u \n\n", sData.state);
 
     elevator_startup();

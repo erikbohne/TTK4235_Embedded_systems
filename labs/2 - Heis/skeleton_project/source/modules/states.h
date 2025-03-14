@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../driver/elevio.h"
+
 typedef enum { 
     DOOR_OPEN = 0,
     STANDING_STILL = 1,
@@ -23,7 +25,6 @@ typedef struct state_data {
 void standing_still(state_data *data, int floor);
 void open_door(state_data *data);
 void door_open_state(state_data *data, int floor);
-void driving_up(state_data *data, int floor);
-void driving_down(state_data *data, int floor);
+void driving(state_data *data, int floor, MotorDirection dir);
 void clear_all_orders(state_data *data);
 int check_obstruction(state_data *data, int floor);

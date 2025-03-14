@@ -46,11 +46,11 @@ int main(){
             break;
 
         case DRIVING_UP:
-            driving_up(&sData, floor);
+            driving(&sData, floor, DIRN_UP);
             break;
 
         case DRIVING_DOWN:
-            driving_down(&sData, floor);
+            driving(&sData, floor, DIRN_DOWN);
             break;
             
         case DOOR_OPEN:

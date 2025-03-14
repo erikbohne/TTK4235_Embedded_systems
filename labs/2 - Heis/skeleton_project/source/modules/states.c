@@ -191,14 +191,15 @@ void door_open_state(state_data *data, int floor) {
     }
 }
 
-void driving_up(state_data *data, int floor){
+void driving(state_data *data, int floor, MotorDirection dir){
     // Check for stop button
     if (elevio_stopButton()) {
         elevio_motorDirection(DIRN_STOP);
         elevio_stopLamp(1);
         clear_all_orders(data);
         
-        printf("STOP button pressed while moving up. Elevator stopped.\n");
+        printf("STOP button pressed while moving %s. Elevator stopped.\n", 
+               dir == DIRN_UP ? "up" : "down");
         
         // Wait until stop button is released
         while (elevio_stopButton()) {
@@ -212,53 +213,16 @@ void driving_up(state_data *data, int floor){
     }
 
     if (floor >= 0){
-        // Check if we need to stop at this floor
-        if (data->btnStates[floor][BUTTON_HALL_UP] == 1 || data->btnStates[floor][BUTTON_CAB] == 1) {
-            printf("Stopped at floor %d\n", floor);
-            elevio_motorDirection(DIRN_STOP);
-            turnOffButtonLamps(data, floor);
-            elevio_doorOpenLamp(1);
-            door_opened_time = time(NULL);
-            door_timer_active = 1;
-            data->state = DOOR_OPEN;
-        }
-    }
-
-    // Safety check for top floor
-    if (floor == N_FLOORS - 1) {
-        printf("Reached top floor, stopping\n");
-        elevio_motorDirection(DIRN_STOP);
-        turnOffButtonLamps(data, floor);
-        elevio_doorOpenLamp(1);
-        door_opened_time = time(NULL);
-        door_timer_active = 1;
-        data->state = DOOR_OPEN;
-    }
-}
-
-void driving_down(state_data *data, int floor){
-    // Check for stop button
-    if (elevio_stopButton()) {
-        elevio_motorDirection(DIRN_STOP);
-        elevio_stopLamp(1);
-        clear_all_orders(data);
+        // Check if we need to stop at this floor based on direction
+        int should_stop = 0;
         
-        printf("STOP button pressed while moving down. Elevator stopped.\n");
-        
-        // Wait until stop button is released
-        while (elevio_stopButton()) {
-            nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+        if (dir == DIRN_UP) {
+            should_stop = data->btnStates[floor][BUTTON_HALL_UP] == 1 || data->btnStates[floor][BUTTON_CAB] == 1;
+        } else if (dir == DIRN_DOWN) {
+            should_stop = data->btnStates[floor][BUTTON_HALL_DOWN] == 1 || data->btnStates[floor][BUTTON_CAB] == 1;
         }
         
-        elevio_stopLamp(0);
-        printf("STOP button released.\n");
-        data->state = STANDING_STILL;
-        return;
-    }
-
-    if (floor >= 0){
-        // Check if we need to stop at this floor
-        if (data->btnStates[floor][BUTTON_HALL_DOWN] == 1 || data->btnStates[floor][BUTTON_CAB] == 1) {
+        if (should_stop) {
             printf("Stopped at floor %d\n", floor);
             elevio_motorDirection(DIRN_STOP);
             turnOffButtonLamps(data, floor);
@@ -270,9 +234,9 @@ void driving_down(state_data *data, int floor){
         }
     }
     
-    // Safety check for bottom floor
-    if (floor == 0) {
-        printf("Reached bottom floor, stopping\n");
+    // Safety check for end floors
+    if ((dir == DIRN_UP && floor == N_FLOORS - 1) || (dir == DIRN_DOWN && floor == 0)) {
+        printf("Reached %s floor, stopping\n", dir == DIRN_UP ? "top" : "bottom");
         elevio_motorDirection(DIRN_STOP);
         turnOffButtonLamps(data, floor);
         elevio_doorOpenLamp(1);

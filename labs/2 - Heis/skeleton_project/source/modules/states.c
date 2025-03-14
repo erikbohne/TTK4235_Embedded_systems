@@ -9,7 +9,7 @@
 static time_t door_opened_time = 0;
 static int door_timer_active = 0;
 static int obstruction_active = 0;
-static int idle_message_printed = 0; // Track if idle message was already printed
+static int idle_message_printed = 0;
 
 // Clear all orders and turn off all button lights
 void clear_all_orders(state_data *data) {
@@ -101,7 +101,7 @@ void standing_still(state_data *data, int floor) {
                 printf("Changing direction to up from floor %d to %d\n", floor, i);
                 elevio_motorDirection(DIRN_UP);
                 data->state = DRIVING_UP;
-                data->dir = CURRENT_DIR_UP;  // Fixed: Should be UP not DOWN
+                data->dir = CURRENT_DIR_UP;
                 return;
             }
         }
@@ -170,10 +170,10 @@ void door_open_state(state_data *data, int floor) {
         if (!obstruction_active) {
             printf("Obstruction detected, keeping door open and clearing all orders\n");
             obstruction_active = 1;
-            clear_all_orders(data);  // Clear all orders when obstruction is detected
+            clear_all_orders(data);
         }
         elevio_doorOpenLamp(1);  // Ensure door stays open
-        // Don't reset timer, just keep door open indefinitely while obstruction is active
+        // Don't reset timer
         return;
     } else if (obstruction_active) {
         printf("Obstruction cleared, starting door timer\n");
@@ -187,7 +187,7 @@ void door_open_state(state_data *data, int floor) {
         elevio_doorOpenLamp(0);
         door_timer_active = 0;
         data->state = STANDING_STILL;
-        idle_message_printed = 0; // Reset the flag to allow one idle message after closing door
+        idle_message_printed = 0; // Reset the idle flag
     }
 }
 

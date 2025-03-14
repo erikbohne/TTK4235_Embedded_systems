@@ -65,9 +65,9 @@ void standing_still(state_data *data, int floor) {
 
     // Prefer the direction from the last ride, if available.
     if (data->dir == CURRENT_DIR_UP) {
-        // Look for any orders above the current floor.
+        // Look for any orders above the current floor (both UP and DOWN hall calls)
         for (i = floor + 1; i < N_FLOORS; i++) {
-            if (data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
+            if (data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
                 printf("Going up from floor %d to %d\n", floor, i);
                 elevio_motorDirection(DIRN_UP);
                 data->state = DRIVING_UP;
@@ -86,9 +86,9 @@ void standing_still(state_data *data, int floor) {
             }
         }
     } else if (data->dir == CURRENT_DIR_DOWN) {
-        // Look for any orders below the current floor.
+        // Look for any orders below the current floor (both UP and DOWN hall calls)
         for (i = floor - 1; i >= 0; i--) {
-            if (data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
+            if (data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
                 printf("Going down from floor %d to %d\n", floor, i);
                 elevio_motorDirection(DIRN_DOWN);
                 data->state = DRIVING_DOWN;
@@ -108,7 +108,7 @@ void standing_still(state_data *data, int floor) {
     } else {
         // No previous direction: default to checking up first.
         for (i = floor + 1; i < N_FLOORS; i++) {
-            if (data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
+            if (data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
                 printf("Going up from floor %d to %d\n", floor, i);
                 elevio_motorDirection(DIRN_UP);
                 data->state = DRIVING_UP;
@@ -118,7 +118,7 @@ void standing_still(state_data *data, int floor) {
         }
         // Then check downwards.
         for (i = floor - 1; i >= 0; i--) {
-            if (data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
+            if (data->btnStates[i][BUTTON_HALL_DOWN] == 1 || data->btnStates[i][BUTTON_HALL_UP] == 1 || data->btnStates[i][BUTTON_CAB] == 1) {
                 printf("Going down from floor %d to %d\n", floor, i);
                 elevio_motorDirection(DIRN_DOWN);
                 data->state = DRIVING_DOWN;

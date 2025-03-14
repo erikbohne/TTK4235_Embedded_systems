@@ -215,11 +215,35 @@ void driving(state_data *data, int floor, MotorDirection dir){
     if (floor >= 0){
         // Check if we need to stop at this floor based on direction
         int should_stop = 0;
+        int has_orders_below = 0;
+        int has_orders_above = 0;
+        
+        // Check if there are any orders below current floor
+        for (int i = 0; i < floor; i++) {
+            if (data->btnStates[i][BUTTON_HALL_UP] || data->btnStates[i][BUTTON_HALL_DOWN] || data->btnStates[i][BUTTON_CAB]) {
+                has_orders_below = 1;
+                break;
+            }
+        }
+        
+        // Check if there are any orders above current floor
+        for (int i = floor + 1; i < N_FLOORS; i++) {
+            if (data->btnStates[i][BUTTON_HALL_UP] || data->btnStates[i][BUTTON_HALL_DOWN] || data->btnStates[i][BUTTON_CAB]) {
+                has_orders_above = 1;
+                break;
+            }
+        }
         
         if (dir == DIRN_UP) {
-            should_stop = data->btnStates[floor][BUTTON_HALL_UP] == 1 || data->btnStates[floor][BUTTON_CAB] == 1;
+            // Always stop for UP calls and CAB calls when going up
+            should_stop = data->btnStates[floor][BUTTON_HALL_UP] || data->btnStates[floor][BUTTON_CAB];
+            // Also stop for DOWN calls if there are no more calls above
+            should_stop = should_stop || (data->btnStates[floor][BUTTON_HALL_DOWN] && !has_orders_above);
         } else if (dir == DIRN_DOWN) {
-            should_stop = data->btnStates[floor][BUTTON_HALL_DOWN] == 1 || data->btnStates[floor][BUTTON_CAB] == 1;
+            // Always stop for DOWN calls and CAB calls when going down
+            should_stop = data->btnStates[floor][BUTTON_HALL_DOWN] || data->btnStates[floor][BUTTON_CAB];
+            // Also stop for UP calls if there are no more calls below
+            should_stop = should_stop || (data->btnStates[floor][BUTTON_HALL_UP] && !has_orders_below);
         }
         
         if (should_stop) {
@@ -236,13 +260,22 @@ void driving(state_data *data, int floor, MotorDirection dir){
     
     // Safety check for end floors
     if ((dir == DIRN_UP && floor == N_FLOORS - 1) || (dir == DIRN_DOWN && floor == 0)) {
-        printf("Reached %s floor, stopping\n", dir == DIRN_UP ? "top" : "bottom");
-        elevio_motorDirection(DIRN_STOP);
-        turnOffButtonLamps(data, floor);
-        elevio_doorOpenLamp(1);
-        door_opened_time = time(NULL);
-        door_timer_active = 1;
-        data->state = DOOR_OPEN;
+        // Only stop and open doors if there are orders at this floor
+        if (data->btnStates[floor][BUTTON_HALL_UP] || data->btnStates[floor][BUTTON_HALL_DOWN] || data->btnStates[floor][BUTTON_CAB]) {
+            printf("Reached %s floor with orders, stopping and opening doors\n", dir == DIRN_UP ? "top" : "bottom");
+            elevio_motorDirection(DIRN_STOP);
+            turnOffButtonLamps(data, floor);
+            elevio_doorOpenLamp(1);
+            door_opened_time = time(NULL);
+            door_timer_active = 1;
+            data->state = DOOR_OPEN;
+        } else {
+            // Just stop and go to STANDING_STILL without opening doors
+            printf("Reached %s floor without orders, stopping\n", dir == DIRN_UP ? "top" : "bottom");
+            elevio_motorDirection(DIRN_STOP);
+            data->state = STANDING_STILL;
+            data->dir = (dir == DIRN_UP) ? CURRENT_DIR_DOWN : CURRENT_DIR_UP;
+        }
     }
 }
 

@@ -55,3 +55,25 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# LaTeX intermediate files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fls
+*.fdb_latexmk
+*.lof
+*.log
+*.lot
+*.out
+*.synctex.gz
+*.toc
+*.nav
+*.snm
+
+# Optional: Ignore PDFs - Nice å ha denne når vi nærmer oss ferdig. Kan kommentere ut i en av de siste commits. 
+*.pdf
+
+# Editor config (optional)
+.vscode/

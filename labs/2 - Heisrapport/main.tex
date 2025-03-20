@@ -1,0 +1,80 @@
+\documentclass[a4paper,12pt]{report}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{lipsum} % Dummy text
+
+\geometry{margin=1in}
+
+% Header & Footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{Course Code - Course Name}
+
+% Title Page
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    
+    \includegraphics[width=0.4\textwidth]{ntnu_logo.png}\\[1cm]
+    
+    \Huge Department of Marine Technology\\[1cm]
+    
+    \LARGE Course Code - Course Name\\[1.5cm]
+    
+    \Huge \textbf{Template Project}\\[2cm]
+    
+    \Large Author:\
+    \Large Ola Nordmann\\[1cm]
+    
+    \Large \today
+    
+    \vfill
+\end{titlepage}
+
+% TOC, LOF, LOT
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+
+% Sections from separate files
+\chapter{Introduction}
+\input{sections/introduction.tex}
+
+\chapter{Example Section}
+\input{sections/example_section.tex}
+
+\chapter{Conclusion}
+\input{sections/conclusion.tex}
+
+% Bibliography
+\begin{thebibliography}{9}
+\bibitem{example} Author, \emph{Book/Article Title}, Publisher, Year.
+\end{thebibliography}
+
+% Appendices
+\appendix
+
+\chapter{Hello World Example}
+\input{sections/hello_world_example.tex}
+
+\chapter{Flow Chart Example}
+\input{sections/flow_chart_example.tex}
+
+\chapter{Sub-figures Example}
+\input{sections/sub_figures_example.tex}
+
+\end{document}

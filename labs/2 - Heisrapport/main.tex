@@ -19,7 +19,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{\thepage}
-\lhead{Course Code - Course Name}
+\lhead{TTK4235 - Embedded Systems}
 
 % Title Page
 \begin{document}
@@ -30,14 +30,13 @@
     
     \includegraphics[width=0.4\textwidth]{ntnu_logo.png}\\[1cm]
     
-    \Huge Department of Marine Technology\\[1cm]
+    \Huge Department of Engineering Cybernetics\\[1cm]
     
-    \LARGE Course Code - Course Name\\[1.5cm]
+    \LARGE TTK4235 - Embedded Systems\\[1.5cm]
     
-    \Huge \textbf{Template Project}\\[2cm]
+    \Huge \textbf{Heislabb}\\[2cm]
     
-    \Large Author:\
-    \Large Ola Nordmann\\[1cm]
+    \Large Author: Erik Bohne og Lars Lien\\[1cm]
     
     \Large \today
     
@@ -51,30 +50,16 @@
 \clearpage
 
 % Sections from separate files
-\chapter{Introduction}
 \input{sections/introduction.tex}
-
-\chapter{Example Section}
-\input{sections/example_section.tex}
-
-\chapter{Conclusion}
-\input{sections/conclusion.tex}
-
-% Bibliography
-\begin{thebibliography}{9}
-\bibitem{example} Author, \emph{Book/Article Title}, Publisher, Year.
-\end{thebibliography}
+\input{sections/arkitekturdesign.tex}
+\input{sections/moduldesign.tex}
+\input{sections/implementasjon.tex}
+\input{sections/test_verifikasjon.tex}
+\input{sections/brukerveiledning.tex}
+\input{sections/refleksjon_vurdering.tex}
+\input{sections/konklusjon.tex}
 
 % Appendices
-\appendix
-
-\chapter{Hello World Example}
-\input{sections/hello_world_example.tex}
-
-\chapter{Flow Chart Example}
-\input{sections/flow_chart_example.tex}
-
-\chapter{Sub-figures Example}
-\input{sections/sub_figures_example.tex}
+\input{sections/appendiks.tex}
 
 \end{document}

@@ -1,9 +1,62 @@
 \chapter{Konklusjon}
 \section{Oppsummering av prosjektet}
-% Innhold her
+I dette prosjektet har vi utviklet et heisstyringssystem med en robust arkitektur basert på en tilstandsmaskin. Vi startet med en grundig analyse av kravspesifikasjonen og designet deretter et system som kunne håndtere alle nødvendige heisoperasjoner og feilsituasjoner på en pålitelig måte.
+
+Gjennom utviklingsfasene fulgte vi en pragmatisk versjon av V-modellen som ga oss struktur og systematikk i arbeidet. Vi valgte en tilnærming der systemet ble brutt ned i veldefinerte moduler som samhandlet via en sentralisert datastruktur, noe som gjorde det enkelt å implementere, teste og vedlikeholde hver del av systemet.
+
+Implementasjonen bestod av flere hovedmoduler, inkludert en oppstartsmodul, tilstandsmoduler for de ulike driftstilstandene, og en inputmodul som håndterte knapper og lys. Disse modulene ble integrert til et helhetlig system som kunne utføre alle ønskede heisfunksjoner.
+
+Resultatet ble et fungerende heisstyringssystem som oppfyller alle krav i spesifikasjonen og håndterer potensielle feilsituasjoner på en robust måte.
 
 \section{Evaluering av resultatene}
-% Innhold her
+Prosjektet har resultert i et velfungerende heisstyringssystem som tilfredsstiller alle funksjonelle krav spesifisert i oppgaven. Systemet håndterer bestillinger effektivt, responderer korrekt på brukerinteraksjoner, og takler uventede situasjoner på en robust måte.
+
+Arkitekturvalget med en tilstandsmaskin har vist seg å være svært vellykket. Det ga oss en klar og intuitiv struktur for systemet, gjorde implementasjonen mer oversiktlig, og forenklet testing og feilsøking. Særlig verdifullt var det at vi kunne visualisere systemets oppførsel gjennom et tilstandsdiagram, noe som ga oss en felles forståelse av hvordan systemet skulle fungere.
+
+Valget om å bruke et regelbasert system for bestillingshåndtering fremfor et dynamisk køsystem var også vellykket. Det resulterte i en enklere implementasjon som likevel ga en intuitiv og effektiv heisoppførsel.
+
+Den modulære tilnærmingen til utviklingen, der systemet ble delt inn i veldefinerte komponenter med klare ansvarsområder, ga oss flere fordeler:
+\begin{itemize}
+    \item Det var enklere å teste hver modul isolert
+    \item Integrasjonsproblemer kunne identifiseres og løses tidlig
+    \item Arbeidet kunne fordeles effektivt i teamet
+    \item Vedlikehold og endringer ble enklere å implementere
+\end{itemize}
+
+Prosessen med å følge V-modellen var generelt nyttig, men vi opplevde at vi måtte tilpasse den til prosjektets omfang. Vi beveget oss ofte frem og tilbake mellom fasene når nye innsikter eller utfordringer dukket opp.
 
 \section{Mulige videre forbedringer}
-% Innhold her
+Selv om systemet fungerer godt, ser vi flere områder hvor det kunne vært forbedret ved videre utvikling:
+
+\subsection{Funksjonelle forbedringer}
+\begin{itemize}
+    \item \textbf{Avansert bestillingshåndtering:} Implementere en mer avansert algoritme for bestillingshåndtering som optimaliserer heisens rute basert på faktorer som ventetid, energiforbruk, eller antall stopp.
+    
+    \item \textbf{Støtte for flere heiser:} Utvide systemet til å støtte flere heiser som samarbeider for å håndtere bestillinger mest mulig effektivt.
+    
+    \item \textbf{Avansert feilhåndtering:} Legge til mer sofistikert feildiagnostikk og automatisk gjenoppretting fra et bredere spekter av feilsituasjoner.
+    
+    \item \textbf{Datalogging og analyse:} Implementere logging av heisens operasjoner for senere analyse og optimalisering av driften.
+\end{itemize}
+
+\subsection{Tekniske forbedringer}
+\begin{itemize}
+    \item \textbf{Automatisert testing:} Utvikle et mer omfattende og automatisert testoppsett for å sikre systemets robusthet under alle forhold.
+    
+    \item \textbf{Bedre modulstruktur:} Ytterligere forbedre modulariteten i koden for å gjøre den enda enklere å vedlikeholde og utvide.
+    
+    \item \textbf{Grafisk brukergrensesnitt:} Implementere et grafisk brukergrensesnitt for overvåking og kontroll av heisen, spesielt nyttig for vedlikehold og feilsøking.
+    
+    \item \textbf{Dokumentasjonsforbedringer:} Utvide kodekommentarer og dokumentasjon, potensielt med mer omfattende Doxygen-generert dokumentasjon.
+\end{itemize}
+
+\subsection{Prosessforbedringer}
+\begin{itemize}
+    \item \textbf{Mer formell kravspesifikasjon:} Bruke en mer formell metode for å spesifisere og validere krav, som for eksempel temporallogikk for å presist definere systemets ønskede oppførsel.
+    
+    \item \textbf{Bedre integrasjon av V-modellen:} Tilpasse V-modellen bedre til prosjektets omfang og behov, med tydeligere sammenheng mellom de ulike fasene.
+    
+    \item \textbf{Kontinuerlig integrasjon:} Implementere et kontinuerlig integrasjons- og testmiljø for å automatisk fange opp regresjoner og problemer tidlig.
+\end{itemize}
+
+Avslutningsvis har prosjektet gitt oss verdifull erfaring innen utvikling av innebygde systemer, arkitekturdesign, og programvareutvikling med vekt på robusthet og pålitelighet. De erfaringene og lærdommene vi har tilegnet oss gjennom dette prosjektet vil være direkte overførbare til fremtidige embedded systems-prosjekter, enten de involverer heiser eller andre kontrollsystemer.

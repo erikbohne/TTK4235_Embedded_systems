@@ -1,6 +1,160 @@
 \chapter{Implementasjon}
+Etter å ha definert arkitekturen og moduldesignen for heissystemet, gikk vi videre til implementasjonsfasen. Denne fasen innebar å omsette designet til fungerende kode og teste hver enkelt modul underveis for å sikre korrekt funksjonalitet.
+
 \section{Generell struktur (state machine)}
-% Innhold her
+Implementasjonen av heissystemet følger tilstandsmaskinarkitekturen som ble definert i arkitekturfasen. Hovedstrukturen består av en hovedløkke som kontinuerlig sjekker nåværende tilstand og kaller riktig tilstandsfunksjon. Hver tilstandsfunksjon utfører handlinger basert på systemets nåværende tilstand og returnerer den neste tilstanden.
+
+\begin{lstlisting}[style=cpp, caption=Hovedløkken i main-filen]
+int main() {
+    // Initialisering av hardware og tilstandsdata
+    hardware_init();
+    state_data data = {INIT_STATE, {{0}}, DIR_STOP};
+
+    // Hovedløkken
+    while (1) {
+        // Oppdater knapper og bestillinger
+        input_update_buttons(&data);
+
+        // Håndter nødstopp hvis aktivert
+        if (hardware_read_stop_signal()) {
+            data.state = EMERGENCY_STOP_STATE;
+        }
+
+        // Kjør riktig tilstandsfunksjon basert på nåværende tilstand
+        switch (data.state) {
+            case INIT_STATE:
+                data = init_state_run(&data);
+                break;
+            case IDLE_STATE:
+                data = idle_state_run(&data);
+                break;
+            case MOVING_STATE:
+                data = moving_state_run(&data);
+                break;
+            case DOOR_OPEN_STATE:
+                data = door_open_state_run(&data);
+                break;
+            case EMERGENCY_STOP_STATE:
+                data = emergency_stop_state_run(&data);
+                break;
+            default:
+                fprintf(stderr, "Error: Ukjent tilstand\n");
+                hardware_command_movement(HARDWARE_MOVEMENT_STOP);
+                exit(1);
+                break;
+        }
+    }
+
+    return 0;
+}
+\end{lstlisting}
+
+Denne implementasjonen sørger for at heisen alltid er i en veldefinert tilstand, og at overganger mellom tilstander håndteres på en konsistent måte. Den sentraliserte datastrukturen \texttt{state\_data} fungerer som informasjonsbærer mellom tilstandene og inneholder all nødvendig informasjon for at hver tilstandsfunksjon kan ta riktige beslutninger.
+
+\section{Implementasjon av tilstandsfunksjoner}
+Hver tilstandsfunksjon er implementert med en klar struktur og ansvar. Her er et eksempel på implementasjonen av \texttt{idle\_state\_run}:
+
+\begin{lstlisting}[style=cpp, caption=Implementasjon av idle\_state\_run]
+state_data idle_state_run(state_data *data) {
+    // Sjekk om det finnes bestillinger
+    if (!orders_check_if_any_orders(data->btnStates)) {
+        // Ingen bestillinger, forbli i hviletilstand
+        return *data;
+    }
+
+    // Sjekk om det finnes bestillinger i nåværende etasje
+    int current_floor = hardware_read_floor_sensor();
+    if (current_floor != -1 && orders_check_if_should_stop_at_floor(current_floor, data->dir, data->btnStates)) {
+        // Bestilling i nåværende etasje, åpne døren
+        data->state = DOOR_OPEN_STATE;
+        return *data;
+    }
+
+    // Bestem hvilken retning heisen skal kjøre
+    Direction new_dir = orders_get_direction(data->btnStates, current_floor, data->dir);
+    data->dir = new_dir;
+
+    // Start bevegelse i valgt retning
+    if (new_dir == DIR_UP) {
+        hardware_command_movement(HARDWARE_MOVEMENT_UP);
+    } else if (new_dir == DIR_DOWN) {
+        hardware_command_movement(HARDWARE_MOVEMENT_DOWN);
+    }
+
+    // Gå til bevegelsestilstand
+    data->state = MOVING_STATE;
+    return *data;
+}
+\end{lstlisting}
+
+Denne implementasjonen følger logikken som ble definert i moduldesignen, der hviletilstanden enten forblir inaktiv (hvis det ikke finnes bestillinger), åpner døren (hvis det finnes bestillinger i nåværende etasje), eller starter bevegelse i riktig retning (hvis det finnes bestillinger i andre etasjer).
+
+\section{Implementasjon av bestillingshåndtering}
+Et sentralt aspekt av implementasjonen var håndteringen av bestillinger. Dette ble implementert gjennom funksjoner som \texttt{orders\_check\_if\_any\_orders}, \texttt{orders\_check\_if\_should\_stop\_at\_floor} og \texttt{orders\_get\_direction}. Her er et eksempel på implementasjonen av funksjonen som avgjør om heisen skal stoppe i en gitt etasje:
+
+\begin{lstlisting}[style=cpp, caption=Implementasjon av bestillingskontroll]
+int orders_check_if_should_stop_at_floor(int floor, Direction dir, int btnStates[HARDWARE_NUMBER_OF_FLOORS][HARDWARE_NUMBER_OF_BUTTONS]) {
+    // Stopp hvis det finnes bestilling fra innsiden av heisen til denne etasjen
+    if (btnStates[floor][HARDWARE_ORDER_INSIDE]) {
+        return 1;
+    }
+
+    // Stopp hvis heisen beveger seg oppover og det finnes bestilling oppover fra denne etasjen
+    if (dir == DIR_UP && btnStates[floor][HARDWARE_ORDER_UP]) {
+        return 1;
+    }
+
+    // Stopp hvis heisen beveger seg nedover og det finnes bestilling nedover fra denne etasjen
+    if (dir == DIR_DOWN && btnStates[floor][HARDWARE_ORDER_DOWN]) {
+        return 1;
+    }
+
+    // Stopp hvis dette er øverste etasje og heisen beveger seg oppover
+    if (floor == HARDWARE_NUMBER_OF_FLOORS - 1 && dir == DIR_UP) {
+        return 1;
+    }
+
+    // Stopp hvis dette er nederste etasje og heisen beveger seg nedover
+    if (floor == 0 && dir == DIR_DOWN) {
+        return 1;
+    }
+
+    // Stopp hvis det ikke finnes flere bestillinger i nåværende retning
+    if (!orders_check_if_orders_in_direction(floor, dir, btnStates)) {
+        return 1;
+    }
+
+    return 0;
+}
+\end{lstlisting}
+
+Denne implementasjonen følger det regelbaserte systemet som ble definert i arkitekturfasen, der heisen stopper ved en etasje hvis det finnes relevante bestillinger i forhold til heisens retning.
 
 \section{Testing av hver enkelt modul under utvikling}
-% Innhold her
+Under implementasjonsfasen fulgte vi en inkrementell tilnærming der hver modul ble testet grundig før integrasjon med resten av systemet. Dette ga oss mulighet til å identifisere og korrigere feil tidlig i utviklingsprosessen.
+
+For hver tilstandsmodul utviklet vi en enkel testrutine som simulerte ulike scenarier for å verifisere at modulen håndterte overgangene korrekt. For eksempel ble \texttt{init\_state\_run} testet med ulike initielle posisjoner for å sikre at heisen alltid endte opp i en kjent posisjon.
+
+\begin{lstlisting}[style=cpp, caption=Eksempel på testrutine for init\_state]
+void test_init_state() {
+    state_data data = {INIT_STATE, {{0}}, DIR_STOP};
+    
+    // Test 1: Heisen er ikke i en etasje
+    hardware_simulate_floor_sensor(-1);
+    state_data result = init_state_run(&data);
+    assert(result.state == INIT_STATE); // Skal forbli i init-tilstand
+    
+    // Test 2: Heisen ankommer en etasje
+    hardware_simulate_floor_sensor(0);
+    result = init_state_run(&data);
+    assert(result.state == IDLE_STATE); // Skal gå til idle-tilstand
+    
+    printf("Alle tester for init_state bestått!\n");
+}
+\end{lstlisting}
+
+Tilsvarende testet vi inputmodulen med simulerte knappetrykk for å sikre at bestillinger ble riktig registrert og at lys ble riktig aktivert.
+
+Gjennom denne inkrementelle test-drevet tilnærmingen kunne vi bygge opp systemet gradvis og med høy grad av tillit til hver enkelt moduls korrekthet. Dette reduserte kompleksiteten i integrasjonsfasen og gjorde det enklere å identifisere eventuelle problemer når modulene ble koblet sammen.
+
+Implementasjonsfasen resulterte i et fullstendig fungerende heisstyringssystem som oppfylte alle krav i spesifikasjonen og hadde en robust og vedlikeholdbar kodebase. Den modulære strukturen og klare tilstandsovergangene gjorde systemet enkelt å forstå og utvide ved behov.

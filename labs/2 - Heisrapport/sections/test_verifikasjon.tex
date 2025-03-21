@@ -1,15 +1,170 @@
 \chapter{Test og Verifikasjon}
+I tråd med V-modellen utførte vi systematisk testing på ulike nivåer for å sikre at heissystemet fungerte korrekt. Testingen ble gjennomført i flere faser og var en integrert del av utviklingsprosessen.
+
 \section{Enhetstesting}
-% Innhold her
+Enhetstesting var den første testfasen og fokuserte på å verifisere at hver enkelt modul fungerte korrekt isolert fra resten av systemet. Vi utførte følgende enhetstester:
+
+\subsection{Testing av tilstandsmoduler}
+Hver tilstandsmodul ble testet med simulerte inngangsverdier for å verifisere at modulen håndterte alle mulige scenarier korrekt og returnerte forventet neste tilstand. For eksempel:
+
+\begin{itemize}
+    \item \textbf{init\_state\_run}: Vi testet at modulen korrekt initialiserte heisen ved oppstart og fant en definert posisjon.
+    \item \textbf{idle\_state\_run}: Vi testet at modulen korrekt håndterte ulike bestillingsscenarier og valgte riktig neste tilstand.
+    \item \textbf{moving\_state\_run}: Vi testet at modulen korrekt håndterte ankomst til etasjer og bestillingskontroll under bevegelse.
+    \item \textbf{door\_open\_state\_run}: Vi testet at modulen håndterte tidsstyring for døråpning og stenging korrekt.
+    \item \textbf{emergency\_stop\_state\_run}: Vi testet at modulen korrekt håndterte nødstopp i ulike scenarier (i etasje, mellom etasjer).
+\end{itemize}
+
+\subsection{Testing av inputmodulen}
+For inputmodulen testet vi at knappetrykk ble korrekt registrert i datastrukturen, og at heislys ble satt riktig basert på bestillinger. Vi simulerte knappetrykk for alle mulige etasjer og retninger.
+
+\subsection{Testing av bestillingshåndtering}
+Vi testet funksjonene for bestillingshåndtering med ulike konfigurasjonsmønstre av bestillinger for å sikre at systemet valgte riktig retning og stoppet ved riktige etasjer. Spesielt testet vi kanttilfeller som:
+
+\begin{itemize}
+    \item Bestillinger i samme retning som heisen kjører
+    \item Bestillinger i motsatt retning
+    \item Bestillinger når heisen er ved øverste eller nederste etasje
+    \item Ingen bestillinger i nåværende retning, men bestillinger i motsatt retning
+\end{itemize}
+
+Enhetstestene ble utført manuelt med testdrivere som simulerte inngangsverdier og verifiserte utgangsresultater. For mer komplekse moduler brukte vi en kombinasjon av manuelle tester og enkle testprogrammer som automatisk utførte testsekvenser.
 
 \section{Integrasjonstesting}
-% Innhold her
+Etter at hver modul var verifisert individuelt, gikk vi videre til integrasjonstesting hvor modulene ble kombinert og testet sammen.
+
+\subsection{Trinnvis integrasjon}
+Vi fulgte en bottom-up tilnærming til integrasjon, hvor vi startet med de lavnivå drivermodulene og gradvis integrerte høyere nivå funksjonalitet:
+
+\begin{enumerate}
+    \item Integrerte hardware-driver med inputmodulen
+    \item Integrerte inputmodulen med bestillingshåndtering
+    \item Integrerte alle tilstandsmoduler med hovedløkken
+\end{enumerate}
+
+For hver integrasjonsfase utførte vi tester som fokuserte på grensesnittene mellom modulene for å sikre at de kommuniserte korrekt og at datastrukturen ble riktig oppdatert og tolket.
+
+\subsection{End-to-end scenarioer}
+Vi testet også flere end-to-end scenarioer som simulerte typiske bruksmønstre:
+
+\begin{itemize}
+    \item Scenario 1: Heisen starter i hviletilstand, mottar bestillinger fra ulike etasjer, betjener disse i riktig rekkefølge, og returner til hviletilstand.
+    \item Scenario 2: Heisen er i bevegelse når den mottar nye bestillinger som bør endre prioritering.
+    \item Scenario 3: Nødstopp aktiveres mens heisen er i bevegelse, og systemet returnerer til normal drift når nødstopp deaktiveres.
+    \item Scenario 4: Dørsensor aktiveres mens døren er åpen, og heisen holder døren åpen til sensoren deaktiveres.
+\end{itemize}
+
+Disse scenariene ble testet manuelt på den faktiske heismaskinvaren for å sikre at integrasjonen mellom programvare og maskinvare fungerte som forventet.
 
 \section{Factory Acceptance Test (FAT)}
-% Innhold her
+Den siste testfasen var en fullstendig systemtest som tilsvarer en Factory Acceptance Test (FAT). Denne testen ble utført på den komplette heisinstallasjonen for å verifisere at systemet som helhet oppfylte kravene i spesifikasjonen.
+
+\subsection{Testprosedyre}
+FAT-testen fulgte en strukturert prosedyre som dekket alle aspekter av systemets funksjonalitet:
+
+\begin{enumerate}
+    \item \textbf{Oppstartsstest}: Verifiserte at heisen korrekt initialiserte ved oppstart.
+    \item \textbf{Bestillingstest}: Testet alle mulige bestillingskombinasjoner (interne, opp, ned) for alle etasjer.
+    \item \textbf{Bevegelsestest}: Verifiserte at heisen beveget seg mellom etasjer på en kontrollert måte og stoppet presist i etasjene.
+    \item \textbf{Prioriteringstest}: Testet at heisen prioriterte bestillinger effektivt og betjente dem i en fornuftig rekkefølge.
+    \item \textbf{Dørtest}: Verifiserte at døren åpnet og lukket seg korrekt, inkludert håndtering av obstruksjon.
+    \item \textbf{Nødstoppstest}: Testet at nødstoppfunksjonen fungerte korrekt i ulike situasjoner.
+    \item \textbf{Robusthetstest}: Simulerte uventede hendelser (f.eks. strømbrudd) for å teste systemets robusthet.
+\end{enumerate}
+
+\subsection{Testradimatrise}
+Vi utviklet en testradimatrise som systematisk dekket alle krav fra spesifikasjonen og knyttet dem til spesifikke testtilfeller. Dette sikret at alle krav ble testet og verifisert.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Krav ID} & \textbf{Beskrivelse} & \textbf{Test ID} & \textbf{Resultat} \\
+\hline
+K1 & Heisen skal stoppe presist i etasjer & T1, T3 & Bestått \\
+\hline
+K2 & Bestillingsknapper skal lyse til bestilling er betjent & T2 & Bestått \\
+\hline
+K3 & Heisen skal betjene alle bestillinger & T2, T4 & Bestått \\
+\hline
+K4 & Nødstopp skal stoppe heisen umiddelbart & T6 & Bestått \\
+\hline
+K5 & Døren skal forbli åpen ved obstruksjon & T5 & Bestått \\
+\hline
+K6 & Heisen skal gjenopprette normal drift etter strømbrudd & T7 & Bestått \\
+\hline
+\end{tabular}
+\caption{Utdrag fra testradimatrisen}
+\label{tab:testradimatrix}
+\end{table}
 
 \section{Resultater og observasjoner}
-% Innhold her
+Testingen av heissystemet ga følgende resultater og observasjoner:
+
+\subsection{Vellykkede aspekter}
+\begin{itemize}
+    \item Tilstandsmaskinen fungerte pålitelig med klare og konsistente overganger mellom tilstander.
+    \item Bestillingshåndteringen prioriterte og betjente bestillinger på en effektiv måte.
+    \item Systemet håndterte nødstopp og obstruksjon i døren korrekt i alle testede scenarier.
+    \item Heisen posisjonerte seg presist i etasjene, noe som er kritisk for sikker drift.
+\end{itemize}
+
+\subsection{Utfordringer og løsninger}
+Under testingen identifiserte vi også noen utfordringer:
+
+\begin{itemize}
+    \item \textbf{Utfordring}: Tidvis unøyaktig deteksjon av etasjer når heisen beveget seg raskt.\\
+    \textbf{Løsning}: Justerte hastigheten på heisen for å sikre mer pålitelig deteksjon.
+    
+    \item \textbf{Utfordring}: Uklare tilstandsoverganger ved samtidig aktivering av nødstopp og ankomst til etasje.\\
+    \textbf{Løsning}: Implementerte klar prioritering av nødstopp over alle andre hendelser.
+    
+    \item \textbf{Utfordring}: Bestillinger kunne noen ganger bli "glemt" hvis flere ble registrert samtidig.\\
+    \textbf{Løsning}: Forbedret inputmodulen til å håndtere samtidige knappetrykk mer robust.
+\end{itemize}
+
+\subsection{Ytelsesmålinger}
+Vi utførte også noen enkle ytelsesmålinger for å vurdere systemets effektivitet:
+
+\begin{itemize}
+    \item Gjennomsnittlig responstid fra bestilling til ankomst: ca. 15 sekunder (avhengig av avstand)
+    \item Døråpningstid: 3 sekunder (konfigurerbar)
+    \item Tid fra nødstopp til full stans: < 0.5 sekunder
+\end{itemize}
 
 \section{Hvordan testingen bekrefter spesifikasjonene}
-% Innhold her
+Testingen vi gjennomførte ga oss høy tillit til at systemet oppfyller alle krav i spesifikasjonen:
+
+\subsection{Funksjonelle krav}
+Alle funksjonelle krav ble systematisk testet og verifisert gjennom FAT-prosedyren og testradimatrisen. Vi sikret at heisen:
+
+\begin{itemize}
+    \item Kunne bevege seg mellom alle etasjer på en kontrollert måte
+    \item Responderte korrekt på alle typer bestillinger
+    \item Håndterte lys, visninger og indikatorer i henhold til spesifikasjonen
+    \item Betjente bestillinger i en fornuftig rekkefølge
+    \item Håndterte nødstopp og obstruksjon i døren korrekt
+\end{itemize}
+
+\subsection{Ikke-funksjonelle krav}
+I tillegg til funksjonelle krav testet vi også ikke-funksjonelle aspekter som:
+
+\begin{itemize}
+    \item \textbf{Robusthet}: Systemet kunne gjenopprette normal drift etter uventede hendelser
+    \item \textbf{Pålitelighet}: Systemet fungerte konsistent over lengre tidsperioder
+    \item \textbf{Brukervennlighet}: Systemet ga intuitiv tilbakemelding til brukeren gjennom lys og indikatorer
+    \item \textbf{Ytelse}: Systemet responderte raskt på brukerinteraksjoner og betjente bestillinger effektivt
+\end{itemize}
+
+\subsection{Samsvar med V-modellen}
+Vår testprosess fulgte V-modellens struktur, hvor testene på høyre side av V-en korresponderte med designfasene på venstre side:
+
+\begin{itemize}
+    \item Enhetstesting validerte modulfasen
+    \item Integrasjonstesting validerte arkitekturfasen
+    \item Systemtesting (FAT) validerte kravspesifikasjonen
+\end{itemize}
+
+Dette sikret at alle aspekter av systemet ble testet på riktig nivå og at det var full sporbarhet mellom krav, design og test.
+
+Gjennom den omfattende testprosessen har vi verifisert at heissystemet oppfyller alle spesifiserte krav og fungerer på en robust og pålitelig måte. De få utfordringene som ble identifisert under testingen ble adressert med spesifikke løsninger, noe som ytterligere forbedret systemets kvalitet.

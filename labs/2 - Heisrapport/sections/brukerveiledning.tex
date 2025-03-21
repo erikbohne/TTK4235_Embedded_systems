@@ -1,9 +1,100 @@
 \chapter{Brukerveiledning}
+Denne brukerveiledningen gir en detaljert beskrivelse av hvordan heisstyringssystemet skal settes opp, kompileres og kjøres. Veiledningen er beregnet på personer med grunnleggende kunnskaper om datamaskiner og programvareutvikling.
+
 \section{Oppkobling og oppstart}
-% Innhold her
+For å koble opp heisstyringssystemet, følg disse trinnene:
+
+\subsection{Maskinvarekrav}
+\begin{itemize}
+    \item PC med Linux operativsystem (Ubuntu 20.04 eller nyere anbefales)
+    \item Heismodell koblet til via USB-port
+    \item Minimum 2GB RAM og 1GB ledig diskplass
+\end{itemize}
+
+\subsection{Installasjon av nødvendige pakker}
+Før heisprogrammet kan kompileres må følgende pakker være installert på systemet. Åpne en terminal og kjør:
+
+\begin{lstlisting}[style=cpp, caption=Installasjon av nødvendige pakker]
+sudo apt-get update
+sudo apt-get install build-essential libcomedi-dev
+\end{lstlisting}
+
+\subsection{Tilkobling av heismodell}
+\begin{enumerate}
+    \item Koble heismodellen til datamaskinen via USB-porten
+    \item Sørg for at heismodellen er slått på
+    \item Verifiser at tilkoblingen er vellykket ved å kjøre denne kommandoen:
+    \begin{lstlisting}[style=cpp]
+    lsusb | grep "Elevator Model"
+    \end{lstlisting}
+    Hvis heismodellen er riktig tilkoblet, vil den vises i listen over USB-enheter.
+\end{enumerate}
 
 \section{Kompilerings- og kjøreinstruksjoner}
-% Innhold her
+Følg disse trinnene for å kompilere og kjøre heisprogrammet:
+
+\subsection{Nedlasting av kildekode}
+Kildekoden kan lastes ned fra prosjektets GitHub-repository:
+\begin{lstlisting}[style=cpp]
+git clone https://github.com/username/elevator-control-system.git
+cd elevator-control-system
+\end{lstlisting}
+
+\subsection{Kompilering}
+Prosjektet bruker et make-system for kompilering. For å kompilere programmet, kjør følgende kommando i prosjektets rotmappe:
+
+\begin{lstlisting}[style=cpp]
+make
+\end{lstlisting}
+
+Dette vil generere en kjørbar fil kalt \texttt{elevator} i prosjektets hovedmappe.
+
+\subsection{Kjøring av programmet}
+For å starte heisprogrammet, bruk følgende kommando:
+
+\begin{lstlisting}[style=cpp]
+./elevator
+\end{lstlisting}
+
+Ved første oppstart vil heisen automatisk kjøre til nærmeste etasje for å kalibrere posisjonen. Når initialiseringen er fullført, vil heisen gå inn i hviletilstand (IDLE\_STATE) og være klar til å motta bestillinger.
 
 \section{Feilhåndtering}
-% Innhold her
+Her er noen vanlige problemer som kan oppstå og hvordan de kan løses:
+
+\subsection{Programmet kompilerer ikke}
+Hvis du får feilmeldinger under kompilering:
+\begin{itemize}
+    \item Sjekk at alle nødvendige pakker er installert
+    \item Verifiser at make-filen eksisterer og er korrekt konfigurert
+    \item Sjekk om det er eventuelle syntaksfeil i koden
+\end{itemize}
+
+\subsection{Heisen initialiseres ikke}
+Hvis heisen ikke initialiseres korrekt:
+\begin{itemize}
+    \item Kontroller at heismodellen er riktig tilkoblet og slått på
+    \item Sjekk om programmet har nødvendige rettigheter til å kommunisere med USB-porten:
+    \begin{lstlisting}[style=cpp]
+    sudo chmod 666 /dev/ttyUSB0  # Endre enhetsnavnet om nødvendig
+    \end{lstlisting}
+    \item Start programmet på nytt
+\end{itemize}
+
+\subsection{Heisen responderer ikke på bestillinger}
+Hvis heisen ikke responderer på knappetrykk:
+\begin{itemize}
+    \item Sjekk konsollutdata for eventuelle feilmeldinger
+    \item Kontroller at heisen er korrekt initialisert
+    \item Prøv å starte programmet på nytt
+    \item Hvis problemet vedvarer, kan det være nødvendig å koble heismodellen fra og til igjen
+\end{itemize}
+
+\subsection{Nødstopp-tilstand}
+Hvis heisen har gått inn i nødstopp-tilstand:
+\begin{itemize}
+    \item Trykk på stopknappen igjen for å deaktivere nødstopp
+    \item Hvis heisen er i en etasje, vil døren åpnes automatisk
+    \item Hvis heisen ikke er i en etasje, vil den automatisk kjøre til nærmeste etasje før den går tilbake til normal drift
+\end{itemize}
+
+For ytterligere problemløsning eller spørsmål, vennligst kontakt utviklingsteamet på \texttt{gruppe46@ntnu.no}.

@@ -1,12 +1,27 @@
 \chapter{Arkitekturdesign}
-\section{Valg av å bruke køsystem eller ikke}
-% Innhold her
 
-\section{Valg om å bruke en state machine}
-% Innhold her
+Liten tekst her? 
 
-\section{Om state machine (modulene i planleggingsfasen)}
-% Innhold her
+\section{Overordnet struktur}
+Den første og viktigeste delen av arbeidet gikk ut på å finne en struktur vi mente ville føre til en ryddig og enkel implementasjon av alle modulene. Ved å lese kravspesifikasjonen nøye og se på den grunnleggende vikemåten til heisen synes vi at en finite-state-machine (norsk?) viket som en god løsning. En av hovedfordelene med tilstandsmaskinen er at vi kunne sette opp et tildstandsmaskindiagramm og det det ga en veldig god oversikt over systemt. Ved å legge til transisjoner og states kunne vi bygge opp state machinen til vi så at alle krav kunne tilfredsstilles ved denne typen arkitektur. Vi ville derfor oppdaget om fremgangsmåten er tilstrekkelig før vi implementerer kode, og det gir en trygget om at arkitekturen kommer til å fungere. 
 
-\section{Hva slags state må håndteres og hva kan være state-less}
-% Innhold her
+(uml diagram her)
+
+\section{Behndling av bestillinger}
+Den neste probemstillingen handlet om hvordan vi skulle lagre og behandle bestillingene fra heisplanelet. I utgnagspunktet sto valget mellom et dynamisk køsystem og et regelbasert system hvor heisen i hver etasjen tar en beslutning om hvor den skal kjøre. Det dynamiske køsystemet viket komplekst uten å gi noe stor gevinst, særlig fordi nye bestillingere fører til en reorganisering av hele køen.
+
+Det regelbaserte systemet fungerer ved å ha kontroll på hvilken vei heisen kjører og hvile etasjer som har bestillinger. I utgangspunktet kjører bare heisen opp og ned og tar med seg de som skal være med videre. I tillegg ignorerer den bestillinger motsatt veg, og tar med de på veg ned isteden.
+
+\section{Håndtering av data}
+Siste seg i arkitekturfasen var å finne ut hvordan vi skal senda data rundt i applikasjonen. Mer spesifikt handler dette om heisens retning, hvilke knapper som er trykket og hvilke state maskinen er i. Dette ble løst ved å oppbevare all data i en struck i main filen. Alle state moduelene lagrer ikke noe mellom hver itterasjon av programmet. Det blir da lettere å teste ettersom hver state funksjon kun avhenger av argumentene og mindre utsatt for feil. 
+
+\begin{lstlisting}[style=cpp, caption=The data struct passed to each state.]
+
+typedef struct state_data {
+    State state;
+    int btnStates[4][3];
+    Direction dir;
+} state_data;
+
+\end{lstlisting}
+

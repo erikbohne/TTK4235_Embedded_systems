@@ -12,6 +12,8 @@
 \usepackage{fancyhdr}
 \usepackage{hyperref}
 \usepackage{lipsum} % Dummy text
+\usepackage{listings}
+\usepackage{xcolor}  % For syntax highlighting
 
 \geometry{margin=1in}
 
@@ -20,6 +22,20 @@
 \fancyhf{}
 \rhead{\thepage}
 \lhead{TTK4235 - Embedded Systems}
+
+\lstdefinestyle{cpp}{
+    language=C++,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    breaklines=true,
+    tabsize=4,
+    showstringspaces=false
+}
 
 % Title Page
 \begin{document}
@@ -49,6 +65,8 @@
 \listoftables
 \clearpage
 
+% Example code box
+\input{examples/cpp_kode.tex}
 % Sections from separate files
 \input{sections/introduction.tex}
 \input{sections/arkitekturdesign.tex}

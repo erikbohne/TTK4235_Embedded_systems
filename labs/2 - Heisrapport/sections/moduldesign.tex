@@ -4,7 +4,11 @@
 Startupmoduelen har som oppgave å sende heisen til en definert posisjon ved oppstart. Den ingnorerer forespørsler og kjører ned til den kommer til en etsaje. Modulen kjører bare ved oppstart uavhenging av resten av programmet og bvar derfor lett å teste.
 
 \section{Input modul}
-Input modulen har som oppgave å
+Input modulen kjører en gang hver syklus og har som jobb behandle heislys og knappepanelet med unntak av stop og obstruksjonsknappen. Den første funskjonen lagrer nye knappetrykk i data strukturen og setter lys. Den andre funskjonen kalles når en etasje er besøkt. Den fjerner knappen fra data strukturen og slukker tilsvarende lys. 
+
+Den store fordelen med denne modulen er at den abstaherer vekk logikken med å endre knappestaus. Ved å bruke fuksjonene vil alltid etasjelys og data stemme overens og sjensen for å gjøre en feil i de andre modulene blir kraftig redusert. 
 
 \section{State moduler}
-% Innhold her
+De største delen av programmet er de ulike state modulene. Oversikten over disse moduelne og hvordan de fungerer kan du se i figur (link uml diagrammet fra Akitekturdelen) 
+
+(Spørsmål: Hva skal vi egentlig skirve her? Hvor mye dtelajer trenegr vi?)

@@ -11,7 +11,6 @@
 \usepackage{geometry}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
-\usepackage{lipsum} % Dummy text
 \usepackage{listings}
 \usepackage{xcolor}  % For syntax highlighting in listings package
 
@@ -37,9 +36,10 @@
     showstringspaces=false
 }
 
-% Title Page
+
 \begin{document}
 
+% Title Page
 \begin{titlepage}
     \centering
     \vspace*{3cm}
@@ -59,19 +59,24 @@
     \vfill
 \end{titlepage}
 
-% TOC, LOF, LOT
+% Viktig for spesialkarakterer i kode boksene.
+\lstset{
+  literate={ø}{{\o}}1
+           {å}{{\aa}}1
+           {æ}{{\ae}}1
+           {Ø}{{\O}}1
+           {Å}{{\AA}}1
+           {Æ}{{\AE}}1
+}
+
 \tableofcontents
 \clearpage
 
-% Example code box
-\input{examples/cpp_kode.tex}
 % Sections from separate files
 \input{sections/introduction.tex}
 \input{sections/arkitekturdesign.tex}
 \input{sections/moduldesign.tex}
 \input{sections/implementasjon.tex}
-\input{sections/test_verifikasjon.tex}
-\input{sections/brukerveiledning.tex}
 \input{sections/refleksjon_vurdering.tex}
 \input{sections/konklusjon.tex}
 

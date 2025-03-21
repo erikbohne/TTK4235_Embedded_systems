@@ -5,23 +5,12 @@ Arkitekturfasen er grunnlaget for hele heisprosjektet, hvor hovedoppgaven var å
 \section{Overordnet struktur}
 Den første og viktigste delen av arbeidet gikk ut på å finne en struktur vi mente ville føre til en ryddig og enkel implementasjon av alle modulene. Ved å lese kravspesifikasjonen nøye og se på den grunnleggende virkemåten til heisen, kom vi frem til at en tilstandsmaskin (finite-state-machine) ville være en god løsning. 
 
-En av hovedfordelene med tilstandsmaskinen er at vi kunne sette opp et tilstandsdiagram som ga en veldig god oversikt over systemet. Ved å legge til transisjoner og tilstander kunne vi bygge opp tilstandsmaskinen til vi så at alle krav kunne tilfredsstilles med denne typen arkitektur. Dette gjorde at vi kunne oppdage eventuelle mangler i designet før vi begynte å implementere kode, noe som ga en trygghet om at arkitekturen ville fungere som tiltenkt.
-
-Tilstandsmaskinen ble designet med følgende hovedtilstander:
-\begin{itemize}
-    \item \textbf{INIT\_STATE}: Initieringstilstand når heisen starter opp
-    \item \textbf{IDLE\_STATE}: Hviletilstand når heisen ikke har aktive bestillinger
-    \item \textbf{MOVING\_STATE}: Tilstand når heisen er i bevegelse
-    \item \textbf{DOOR\_OPEN\_STATE}: Tilstand når heisen står med åpen dør
-    \item \textbf{EMERGENCY\_STOP\_STATE}: Tilstand ved nødstopp
-\end{itemize}
-
-Hver tilstand har definerte overganger til andre tilstander basert på hendelser i systemet. For eksempel vil en bestilling i hviletilstand føre til en overgang til enten bevegelsestilstand eller åpen dør-tilstand, avhengig av om bestillingen er i samme etasje eller ikke.
+En av hovedfordelene med tilstandsmaskinen er at vi kunne sette opp et tilstandsdiagram som ga en veldig god oversikt over systemet. Ved å legge til transisjoner og tilstander kunne vi bygge opp tilstandsmaskinen til vi så at alle krav kunne tilfredsstilles med denne typen arkitektur. Dette gjorde at vi kunne oppdage eventuelle mangler i designet før vi begynte å implementere kode, noe som ga en trygghet om at arkitekturen ville fungere som tiltenkt. Figur \ref{fig:state_machine} viser systemets tilstander og transisjonene mellom disse.
 
 \begin{figure}[H]
     \centering
-    % Her kan du legge inn UML-diagrammet
-    \caption{UML-diagram av heisens tilstandsmaskin}
+    \includegraphics[width=0.7\textwidth]{UML.png}
+    \caption{Forenklet UML-diagram av heisens tilstandsmaskin}
     \label{fig:state_machine}
 \end{figure}
 
@@ -32,26 +21,16 @@ Det regelbaserte systemet vi valgte fungerer ved å ha kontroll på hvilken vei 
 \begin{itemize}
     \item Heisen fortsetter i samme retning så lenge det finnes bestillinger i den retningen
     \item Den betjener alle bestillinger i gjeldende retning før den endrer retning
-    \item Ved ankomst til en etasje betjenes både bestillinger fra etasjeknappen og bestillinger fra heisens interne knapper
     \item Bestillinger i motsatt retning ignoreres midlertidig og tas med på returen
 \end{itemize}
 
-Denne tilnærmingen gir en intuitiv og effektiv bevegelse av heisen uten kompleksiteten til et dynamisk køsystem. Det gjør også systemet mer robust mot endringer i bestillingsmønsteret under drift.
 
 \section{Håndtering av data}
 Siste steg i arkitekturfasen var å finne ut hvordan vi skulle sende data rundt i applikasjonen. Mer spesifikt handler dette om heisens retning, hvilke knapper som er trykket og hvilken tilstand maskinen er i. 
 
-Dette ble løst ved å oppbevare all data i en struktur i hovedfilen. Alle tilstandsmodulene lagrer ikke noe informasjon mellom hver iterasjon av programmet. De får i stedet overlevert systemets nåværende tilstand som en parameter og returnerer den nye tilstanden.
+Dette ble løst ved å oppbevare all data i en struktur i hovedfilen vist i \ref{lst:state_data}.  Ingen av tilstandsmodulene lagrer informasjon mellom hver iterasjon av programmet. De får i stedet overlevert systemets nåværende tilstand som en parameter og returnerer den nye tilstanden.
 
-Dette designvalget har flere fordeler:
-\begin{itemize}
-    \item Det blir lettere å teste ettersom hver tilstandsfunksjon kun avhenger av argumentene
-    \item Systemet blir mindre utsatt for feil relatert til global tilstand
-    \item Det gir bedre oversikt over dataflyt i systemet
-    \item Det forenkler feilsøking siden tilstandsobjektet kan inspiseres på ett sted
-\end{itemize}
-
-\begin{lstlisting}[style=cpp, caption=Datastrukturen som sendes til hver tilstandsfunksjon]
+\begin{lstlisting}[style=cpp, caption=Datastrukturen som sendes til hver tilstandsfunksjon,  label={lst:state_data}]
 typedef struct state_data {
     State state;       // Nåværende tilstand
     int btnStates[4][3]; // Knappetrykk i hver etasje og retning
@@ -59,23 +38,4 @@ typedef struct state_data {
 } state_data;
 \end{lstlisting}
 
-I tillegg til denne strukturen definerte vi også enumerasjoner for tilstander og retninger som gjorde koden mer lesbar og håndterbar:
-
-\begin{lstlisting}[style=cpp, caption=Enumerasjoner for tilstander og retninger]
-typedef enum {
-    INIT_STATE,
-    IDLE_STATE,
-    MOVING_STATE,
-    DOOR_OPEN_STATE,
-    EMERGENCY_STOP_STATE
-} State;
-
-typedef enum {
-    DIR_DOWN = -1,
-    DIR_STOP = 0,
-    DIR_UP = 1
-} Direction;
-\end{lstlisting}
-
-Disse arkitekturvalgene dannet grunnlaget for moduldesignen og implementasjonen som fulgte i neste fase av utviklingsprosessen.
 

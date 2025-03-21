@@ -2,15 +2,32 @@
 \section{Valg tatt i arkitekturfasen: Vellykket eller ikke?}
 Valgene vi tok i arkitekturfasen vise seg stort sett å være gode for implementasjonen av prosjektet. Tilstandsmaskinen var en stor suksess og regelbasert behandling av bestillinger fungerte godt. 
 
-Vi måtte tilbake å gjøre enderinger på designet når vi implementerte stop og obstruksjonsfuksjonaliteten. Vi fant blant annet ut at det ville være nyttig med et "door open" state, noe vi først ikke hadde forutsett. Alt i alt 
+Vi måtte tilbake å gjøre enderinger på designet når vi implementerte stop og obstruksjonsfuksjonaliteten. Vi fant blant annet ut at det ville være nyttig med et "door open" state, noe vi først ikke hadde forutsett. Alt i alt viste dette hvordan den iterative prosessen i V-modellen ga oss mulighet til å forbedre designet basert på innsikt fra implementasjonsfasen, selv om det betydde at vi måtte justere vår opprinnelige UML-modell.
 
 \section{Har V-modellen gjort prosjektet lettere?}
 V-modellen fungerte som et strukturert rammeverk for utviklingsprosessen vår, og bidro til en systematisk tilnærming til prosjektet. Av tidligere erfaring er det lett å bli overveldet av størrelsen på et problem, men ved å strukturert bryte det ned i moduler blir jobben mye mer overkommelig. 
 
-En utfordring med V-modellen var at den kan virke noe rigid for et mindre prosjekt som dette. Design og planleggingsfasen var svært nyttige for implementasjonsfasen, men rigid enhetstesting synes vi ikke var spesielt nyttig. 
+En utfordring med V-modellen var at den kan virke noe rigid for et mindre prosjekt som dette. Design og planleggingsfasen var svært nyttige for implementasjonsfasen, men rigid enhetstesting synes vi ikke var spesielt nyttig.
 
-\section{Forbedringer}
-rotete kode.
+V-modellen påvirket de ulike fasene i prosjektet på følgende måter:
+\begin{itemize}
+    \item \textbf{Startfasen:} Bruken av UML hjalp oss med å visualisere systemet på et høyt nivå før vi begynte å kode, noe som ga oss en klar retning.
+    \item \textbf{Midtfasen:} Moduloppdelingen fra designfasen gjorde det enkelt å fordele arbeid og implementere hver modul individuelt.
+    \item \textbf{Sluttfasen:} Testingen ble enklere fordi vi hadde klare forventninger til hver moduls funksjonalitet basert på designet.
+\end{itemize}
+
+\section{Forbedringer og aspekter ved robusthet}
+En svakhet ved vår implementasjon er at deler av koden ble noe rotete, spesielt i tilstandsmodulene. Dette skyldes delvis at vi måtte gjøre endringer i designet underveis, som resulterte i at koden ikke alltid fulgte det opprinnelige designet.
+
+Med tanke på robusthet, skalerbarhet og vedlikehold, har V-modellen og UML gitt oss noen fordeler:
+
+\begin{itemize}
+    \item \textbf{Robusthet:} Ved å tvinge oss til å tenke gjennom tilstandsoverganger og feilhåndtering på forhånd, hjalp UML-diagrammet oss med å bygge et mer robust system som takler uventede hendelser.
+    
+    \item \textbf{Vedlikehold:} Den modulære strukturen gjør det enklere å forstå og endre individuelle deler av systemet uten å påvirke hele kodebasen.
+\end{itemize}
+
+En utfordring vi opplevde var at den strenge strukturen i vår tilnærming gjorde det vanskeligere å implementere nye funksjonaliteter som ikke var planlagt i det opprinnelige designet, som for eksempel håndtering av obstruksjoner i døren.
 
 
 \section{Bruk av KI}
@@ -20,3 +37,16 @@ Vi anvendte KI-verktøy primært i følgende områder:
 \textbf{Kodegenerering:} For standardfunksjonalitet, modulimplementasjon og boilerplate-kode brukte vi KI til å generere utkast som vi deretter tilpasset, testet og forbedret. Dette reduserte tid brukt på rutineoppgaver.
 
 \textbf{Dokumentasjon:} KI ble brukt til å assistere med generering av kommentarer og dokumentasjon, inkludert bidrag til rapporten.
+
+\subsection{Effekter av KI-bruk på prosjektet}
+Bruken av KI-verktøy hadde flere effekter på arbeidet vårt:
+
+\begin{itemize}
+    \item \textbf{Positive effekter:} Verktøyene hjalp oss med å spare tid på repetitive oppgaver, ga oss forslag til alternative løsninger, og assisterte med feilsøking når vi satt fast.
+    
+    \item \textbf{Utfordringer:} Vi måtte fortsatt tilpasse og kvalitetssikre all generert kode manuelt, siden modellene noen ganger produserte kode som ikke passet med vår arkitektur eller ikke oppfylte våre spesifikke krav.
+    
+    \item \textbf{Læringsperspektiv:} Selv om KI-verktøyene genererte utkast, måtte vi fortsatt forstå koden for å kunne tilpasse og feilsøke den, noe som bidro til læring.
+\end{itemize}
+
+Det er viktig å understreke at KI-verktøyene fungerte som assistenter, ikke erstattere. De kritiske beslutningene om arkitektur, design og implementasjon ble tatt av oss basert på vår forståelse av problemet og kravene.

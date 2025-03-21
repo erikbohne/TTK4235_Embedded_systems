@@ -1,0 +1,305 @@
+\section{Doxygen-dokumentasjon}
+Her presenteres en detaljert dokumentasjon av heissystemets kodestruktur i Doxygen-format.
+
+\subsection{Datastrukturer}
+Heissystemet benytter følgende hovedstrukturer:
+
+\begin{lstlisting}[style=cpp, caption=Heissystemets tilstander]
+/**
+ * @brief Mulige tilstander for heisen
+ */
+typedef enum { 
+    DOOR_OPEN = 0,       /**< Døren er åpen */
+    STANDING_STILL = 1,  /**< Heisen står stille med lukket dør */
+    DRIVING_UP = 2,      /**< Heisen beveger seg oppover */
+    DRIVING_DOWN = 3     /**< Heisen beveger seg nedover */
+} State;
+
+/**
+ * @brief Heisens retning
+ */
+typedef enum { 
+    CURRENT_DIR_UP = 0,    /**< Siste retning var oppover */
+    CURRENT_DIR_DOWN = 1,  /**< Siste retning var nedover */
+} Direction;
+
+/**
+ * @brief Datastruktur som inneholder heissystemets tilstand
+ */
+typedef struct state_data {
+    State state;          /**< Nåværende tilstand */
+    int btnStates[4][3];  /**< Knappetrykk for alle etasjer og knappetyper */
+    Direction dir;        /**< Nåværende/siste retning */
+} state_data;
+\end{lstlisting}
+
+\subsection{Tilstandsmodul (states.h)}
+Modulen inneholder funksjoner for å håndtere de ulike tilstandene i heisen.
+
+\begin{lstlisting}[style=cpp, caption=Hovedfunksjoner i tilstandsmodulen]
+/**
+ * @brief Håndterer tilstanden hvor heisen står stille
+ * 
+ * Når heisen er i denne tilstanden, sjekker den etter
+ * nye bestillinger og bestemmer neste tilstand.
+ * 
+ * @param data Peker til heisens tilstandsdata
+ * @param floor Nåværende etasje (-1 hvis mellom etasjer)
+ */
+void standing_still(state_data *data, int floor);
+
+/**
+ * @brief Åpner heisdøren
+ * 
+ * Aktiverer døråpningslampen og venter i 3 sekunder
+ * før den slår av lampen.
+ * 
+ * @param data Peker til heisens tilstandsdata
+ */
+void open_door(state_data *data);
+
+/**
+ * @brief Håndterer tilstanden med åpen dør
+ * 
+ * Styrer tidtakeren for åpen dør og går tilbake til standing_still
+ * når tidtakeren utløper. Sjekker også for hindring og stoppknapp.
+ * 
+ * @param data Peker til heisens tilstandsdata
+ * @param floor Nåværende etasje (-1 hvis mellom etasjer)
+ */
+void door_open_state(state_data *data, int floor);
+
+/**
+ * @brief Håndterer kjøretilstanden (opp eller ned)
+ * 
+ * Kontrollerer heisbevegelsen og sjekker om den skal stoppe
+ * ved etasjer. Håndterer stoppknappen og overganger til andre tilstander.
+ * 
+ * @param data Peker til heisens tilstandsdata
+ * @param floor Nåværende etasje (-1 hvis mellom etasjer)
+ * @param dir Nåværende bevegelsesretning
+ */
+void driving(state_data *data, int floor, MotorDirection dir);
+
+/**
+ * @brief Nullstiller alle bestillinger og slår av alle knappelys
+ * 
+ * Brukes når stoppknappen trykkes eller i andre situasjoner
+ * hvor alle bestillinger skal kanselleres.
+ * 
+ * @param data Peker til heisens tilstandsdata
+ */
+void clear_all_orders(state_data *data);
+
+/**
+ * @brief Sjekker om det er en hindring i døren
+ * 
+ * Håndterer hindring ved å stoppe heisen, åpne døren,
+ * og nullstille alle bestillinger.
+ * 
+ * @param data Peker til heisens tilstandsdata
+ * @param floor Nåværende etasje (-1 hvis mellom etasjer)
+ * @return 1 hvis hindring er aktiv, 0 ellers
+ */
+int check_obstruction(state_data *data, int floor);
+\end{lstlisting}
+
+\subsection{Inputmodul (input.h)}
+Modulen håndterer knappetrykk og lyssignaler.
+
+\begin{lstlisting}[style=cpp, caption=Hovedfunksjoner i inputmodulen]
+/**
+ * @brief Sjekker for knappetrykk og oppdaterer tilstandsdata
+ * 
+ * Skanner alle heisknapper (hall opp, hall ned, cab) på alle etasjer
+ * og oppdaterer tilstandsdata og knappelys.
+ * Ignorerer knappetrykk hvis stoppknappen er trykket eller hindring er aktiv.
+ * 
+ * @param data Peker til heisens tilstandsdata
+ */
+void checkForInput(state_data *data);
+
+/**
+ * @brief Slår av alle knappelys for en spesifikk etasje
+ * 
+ * Brukes når en etasje betjenes for å nullstille bestillinger og slå av lys.
+ * 
+ * @param data Peker til heisens tilstandsdata
+ * @param floor Etasjen hvor knappelys skal slås av
+ */
+void turnOffButtonLamps(state_data *data, int floor);
+\end{lstlisting}
+
+\subsection{Oppstartsmodul (startup.h)}
+Modulen håndterer initialisering av heisen.
+
+\begin{lstlisting}[style=cpp, caption=Hovedfunksjoner i oppstartsmodulen]
+/**
+ * @brief Initialiserer heisen ved oppstart ved å kjøre til en definert posisjon
+ * 
+ * Ignorerer alle bestillinger og stoppknappen under initialisering.
+ * Kjører heisen til nærmeste etasje hvis den er mellom etasjer.
+ * 
+ * @return 1 når initialiseringen er fullført
+ */
+int elevator_startup();
+
+/**
+ * @brief Slår av alle knappelys
+ * 
+ * Nullstiller alle knappelys ved systemoppstart.
+ */
+void clear_buttons();
+\end{lstlisting}
+
+\subsection{Grensesnitt mot heismaskinvare (elevio.h)}
+Modulen inneholder funksjoner for kommunikasjon med heismaskinvaren.
+
+\begin{lstlisting}[style=cpp, caption=Hovedfunksjoner i maskinvaregrensesnittet]
+/**
+ * @brief Initialiserer heismaskinvaren
+ * 
+ * Må kalles én gang før andre funksjoner benyttes.
+ */
+void elevio_init(void);
+
+/**
+ * @brief Setter motorens retning
+ * 
+ * @param dirn Ønsket retning (DIRN_UP, DIRN_DOWN, DIRN_STOP)
+ */
+void elevio_motorDirection(MotorDirection dirn);
+
+/**
+ * @brief Setter lampen for en spesifikk knapp
+ * 
+ * @param floor Etasjen (0-indeksert)
+ * @param button Knappetypen
+ * @param value 1 for å slå på, 0 for å slå av
+ */
+void elevio_buttonLamp(int floor, ButtonType button, int value);
+
+/**
+ * @brief Setter etasjeindikatoren
+ * 
+ * @param floor Etasjen som skal vises (0-indeksert)
+ */
+void elevio_floorIndicator(int floor);
+
+/**
+ * @brief Kontrollerer døråpningslampen
+ * 
+ * @param value 1 for å slå på, 0 for å slå av
+ */
+void elevio_doorOpenLamp(int value);
+
+/**
+ * @brief Kontrollerer stoppknapplampen
+ * 
+ * @param value 1 for å slå på, 0 for å slå av
+ */
+void elevio_stopLamp(int value);
+
+/**
+ * @brief Leser statusen til en ringeknapp
+ * 
+ * @param floor Etasjen (0-indeksert)
+ * @param button Knappetypen
+ * @return 1 hvis knappen er trykket, 0 ellers
+ */
+int elevio_callButton(int floor, ButtonType button);
+
+/**
+ * @brief Leser etasjesensoren
+ * 
+ * @return Nåværende etasje (0-indeksert), eller -1 hvis mellom etasjer
+ */
+int elevio_floorSensor(void);
+
+/**
+ * @brief Leser status på stoppknappen
+ * 
+ * @return 1 hvis stoppknappen er trykket, 0 ellers
+ */
+int elevio_stopButton(void);
+
+/**
+ * @brief Leser status på hindringsbryteren
+ * 
+ * @return 1 hvis hindring er aktiv, 0 ellers
+ */
+int elevio_obstruction(void);
+\end{lstlisting}
+
+\subsection{Hovedprogram (main.c)}
+Hovedprogrammet for heiskontrollsystemet.
+
+\begin{lstlisting}[style=cpp, caption=Hovedfunksjonen]
+/**
+ * @file main.c
+ * @brief Hovedprogram for heiskontrollsystemet
+ *
+ * Denne filen inneholder hovedløkken for heiskontrollsystemet.
+ * Den implementerer en tilstandsmaskin som håndterer de ulike
+ * heistilstandene og overganger mellom dem basert på inndata og hendelser.
+ *
+ * @author Erik Bohne & Lars Lien
+ */
+
+/**
+ * @brief Hovedfunksjon for heiskontrollsystemet
+ *
+ * Initialiserer heismaskinvaren, utfører oppstartskalibrering,
+ * og kjører hovedkontrollløkken som implementerer heistilstandsmaskinen.
+ *
+ * @return 0 ved normal avslutning, -1 ved feil
+ */
+int main(){
+    // Initialiser maskinvare
+    elevio_init();
+    
+    // Initialiser tilstandsdatastruktur
+    state_data sData = {STANDING_STILL, {{0,0,0},{0,0,0},{0,0,0},{0,0,0}}, CURRENT_DIR_DOWN};
+    
+    // Utfør heisoppstartskalibrering
+    elevator_startup();
+
+    // Hovedkontrollløkke
+    while(1){
+        // Oppdater etasjesensoravlesning
+        floor = elevio_floorSensor();
+        if(floor >= 0){
+            elevio_floorIndicator(floor);
+        }
+        
+        // Sjekk først for hindringer - dette har høyest prioritet
+        if (check_obstruction(&sData, floor)) {
+            continue;
+        }
+        
+        // Sjekk for knappeinndata
+        checkForInput(&sData);
+
+        // Tilstandsmaskinimplementasjon
+        switch (sData.state) {
+        case STANDING_STILL:
+            standing_still(&sData, floor);
+            break;
+        case DRIVING_UP:
+            driving(&sData, floor, DIRN_UP);
+            break;
+        case DRIVING_DOWN:
+            driving(&sData, floor, DIRN_DOWN);
+            break;
+        case DOOR_OPEN:
+            door_open_state(&sData, floor);
+            break;
+        default:
+            return -1;
+            break;
+        }
+    }
+    
+    return 0;
+}
+\end{lstlisting}

@@ -2,125 +2,7 @@
 \chapter{Appendiks}
 Dette appendikset inneholder supplerende dokumentasjon og diagrammer som gir ytterligere detaljer om heisstyringssystemet.
 
-\section{Doxygen-dokumentasjon}
-Vi har generert Doxygen-dokumentasjon for prosjektet for å gi en detaljert oversikt over kodestrukturen og funksjonaliteten. Dokumentasjonen er organisert i følgende seksjoner:
-
-\subsection{Filstruktur}
-Prosjektet består av følgende hovedfiler:
-\begin{itemize}
-    \item \textbf{main.c}: Hovedfil med hovedløkken og overordnet tilstandshåndtering
-    \item \textbf{state\_machine.h}: Definisjoner for tilstandsmaskin og datastrukturer
-    \item \textbf{state\_functions.c/.h}: Implementasjon av tilstandsfunksjoner
-    \item \textbf{input.c/.h}: Håndtering av knapper og lys
-    \item \textbf{orders.c/.h}: Logikk for bestillingshåndtering
-    \item \textbf{hardware.c/.h}: Grensesnitt mot heismaskinvaren
-\end{itemize}
-
-\subsection{Datastrukturer}
-De viktigste datastrukturene i systemet er:
-
-\begin{lstlisting}[style=cpp, caption=Hovedstrukturer i systemet]
-/** Mulige tilstander for heisen */
-typedef enum {
-    INIT_STATE,           /**< Initieringstilstand */
-    IDLE_STATE,           /**< Hviletilstand */
-    MOVING_STATE,         /**< Bevegelsestilstand */
-    DOOR_OPEN_STATE,      /**< Tilstand med åpen dør */
-    EMERGENCY_STOP_STATE  /**< Nødstopptilstand */
-} State;
-
-/** Retning heisen beveger seg i */
-typedef enum {
-    DIR_DOWN = -1,  /**< Nedover */
-    DIR_STOP = 0,   /**< Stopp */
-    DIR_UP = 1      /**< Oppover */
-} Direction;
-
-/** Datastruktur som inneholder systemets tilstand */
-typedef struct state_data {
-    State state;                                     /**< Nåværende tilstand */
-    int btnStates[HARDWARE_NUMBER_OF_FLOORS][HARDWARE_NUMBER_OF_BUTTONS]; /**< Status for alle knapper */
-    Direction dir;                                   /**< Nåværende retning */
-} state_data;
-\end{lstlisting}
-
-\subsection{Hovedfunksjoner}
-De viktigste funksjonene i systemet er:
-
-\begin{lstlisting}[style=cpp, caption=Signatur for hovedfunksjoner]
-/**
- * @brief Hovedfunksjon for initieringstilstand
- * @param data Peker til systemets tilstandsdata
- * @return Oppdatert tilstandsdata
- */
-state_data init_state_run(state_data *data);
-
-/**
- * @brief Hovedfunksjon for hviletilstand
- * @param data Peker til systemets tilstandsdata
- * @return Oppdatert tilstandsdata
- */
-state_data idle_state_run(state_data *data);
-
-/**
- * @brief Hovedfunksjon for bevegelsestilstand
- * @param data Peker til systemets tilstandsdata
- * @return Oppdatert tilstandsdata
- */
-state_data moving_state_run(state_data *data);
-
-/**
- * @brief Hovedfunksjon for tilstand med åpen dør
- * @param data Peker til systemets tilstandsdata
- * @return Oppdatert tilstandsdata
- */
-state_data door_open_state_run(state_data *data);
-
-/**
- * @brief Hovedfunksjon for nødstopptilstand
- * @param data Peker til systemets tilstandsdata
- * @return Oppdatert tilstandsdata
- */
-state_data emergency_stop_state_run(state_data *data);
-
-/**
- * @brief Oppdaterer knappetrykk og lys
- * @param data Peker til systemets tilstandsdata
- */
-void input_update_buttons(state_data *data);
-
-/**
- * @brief Fjerner bestillinger for gitt etasje
- * @param data Peker til systemets tilstandsdata
- * @param floor Etasjen som skal fjernes
- */
-void input_clear_floor_orders(state_data *data, int floor);
-
-/**
- * @brief Sjekker om det finnes bestillinger i systemet
- * @param btnStates Knappestatus
- * @return 1 hvis det finnes bestillinger, ellers 0
- */
-int orders_check_if_any_orders(int btnStates[HARDWARE_NUMBER_OF_FLOORS][HARDWARE_NUMBER_OF_BUTTONS]);
-
-/**
- * @brief Bestemmer om heisen skal stoppe ved en gitt etasje
- * @param floor Etasjenummer
- * @param dir Retning
- * @param btnStates Knappestatus
- * @return 1 hvis heisen skal stoppe, ellers 0
- */
-int orders_check_if_should_stop_at_floor(int floor, Direction dir, int btnStates[HARDWARE_NUMBER_OF_FLOORS][HARDWARE_NUMBER_OF_BUTTONS]);
-
-/**
- * @brief Bestemmer retning basert på bestillinger
- * @param btnStates Knappestatus
- * @param current_floor Nåværende etasje
- * @param current_dir Nåværende retning
- * @return Ny retning (DIR_UP, DIR_DOWN, eller DIR_STOP)
- */
-Direction orders_get_direction(int btnStates[HARDWARE_NUMBER_OF_FLOORS][HARDWARE_NUMBER_OF_BUTTONS], int current_floor, Direction current_dir);
-\end{lstlisting}
+\input{sections/doxygen_appendix.tex}
 
 \section{Tilleggsdiagrammer}
 \subsection{Tilstandsdiagram}
@@ -135,11 +17,10 @@ Her er et detaljert tilstandsdiagram for heisstyringssystemet:
 
 Diagrammet illustrerer følgende hovedtilstander og overganger:
 \begin{itemize}
-    \item \textbf{INIT\_STATE}: Heisen initialiseres og finner en definert posisjon
-    \item \textbf{IDLE\_STATE}: Heisen står stille og venter på bestillinger
-    \item \textbf{MOVING\_STATE}: Heisen beveger seg mellom etasjer
-    \item \textbf{DOOR\_OPEN\_STATE}: Heisen står med åpen dør
-    \item \textbf{EMERGENCY\_STOP\_STATE}: Heisen er i nødstopp-modus
+    \item \textbf{DOOR\_OPEN}: Heisen står med åpen dør
+    \item \textbf{STANDING\_STILL}: Heisen står stille og venter på bestillinger
+    \item \textbf{DRIVING\_UP}: Heisen beveger seg oppover
+    \item \textbf{DRIVING\_DOWN}: Heisen beveger seg nedover
 \end{itemize}
 
 \subsection{Sekvensdiagram}
@@ -160,41 +41,3 @@ Diagrammet illustrerer følgende hovedsekvenser:
     \item Håndtering av ankomst til etasje
     \item Døråpning og -lukking
 \end{itemize}
-
-\section{Heisspesifikasjoner og kravspesifikasjon}
-\subsection{Heismaskinvarespesifikasjoner}
-Heismodellen har følgende egenskaper:
-\begin{itemize}
-    \item 4 etasjer (nummerert 0-3)
-    \item 3 typer bestillingsknapper: opp, ned, og interne (cabinknapper)
-    \item Etasjeindikatorer
-    \item Stopknapp
-    \item Obstruksjonssensor for døren
-\end{itemize}
-
-\subsection{Funksjonelle krav}
-Heisstyringssystemet skal oppfylle følgende funksjonelle krav:
-
-\begin{enumerate}
-    \item \textbf{K1}: Heisen skal kunne bevege seg opp og ned mellom etasjer på en kontrollert måte.
-    \item \textbf{K2}: Heisen skal stoppe ved etasjer presist og åpne døren.
-    \item \textbf{K3}: Bestillingsknapper skal lyse når de trykkes og slukke når bestillingen er betjent.
-    \item \textbf{K4}: Heisen skal betjene alle bestillinger, uavhengig av rekkefølgen de ble registrert.
-    \item \textbf{K5}: Heisen skal prioritere bestillinger effektivt for å minimere total reisetid.
-    \item \textbf{K6}: Heisen skal stoppe umiddelbart når stopknappen trykkes.
-    \item \textbf{K7}: Heisen skal holde døren åpen hvis dørsensoren detekterer en obstruksjon.
-    \item \textbf{K8}: Heisen skal kunne gjenopprette normal drift etter strømbrudd eller nødstopp.
-\end{enumerate}
-
-\subsection{Ikke-funksjonelle krav}
-I tillegg til de funksjonelle kravene må systemet oppfylle følgende ikke-funksjonelle krav:
-
-\begin{enumerate}
-    \item \textbf{NFK1}: Systemet skal være pålitelig og robust mot uventede hendelser.
-    \item \textbf{NFK2}: Systemet skal ha rask responstid på brukerinteraksjoner.
-    \item \textbf{NFK3}: Koden skal være velstrukturert, modulær og lett å vedlikeholde.
-    \item \textbf{NFK4}: Systemet skal gi tydelig tilbakemelding til brukeren gjennom lys og indikatorer.
-    \item \textbf{NFK5}: Systemets oppførsel skal være intuitiv og forutsigbar for brukeren.
-\end{enumerate}
-
-Disse kravene har dannet grunnlaget for design, implementasjon og testing av heisstyringssystemet.

@@ -5,13 +5,12 @@ Arkitekturfasen er grunnlaget for hele heisprosjektet, hvor hovedoppgaven var å
 \section{Overordnet struktur}
 Den første og viktigste delen av arbeidet gikk ut på å finne en struktur vi mente ville føre til en ryddig og enkel implementasjon av alle modulene. Ved å lese kravspesifikasjonen nøye og se på den grunnleggende virkemåten til heisen, kom vi frem til at en tilstandsmaskin (finite-state-machine) ville være en god løsning. 
 
-En av hovedfordelene med tilstandsmaskinen er at vi kunne sette opp et tilstandsdiagram som ga en veldig god oversikt over systemet. Ved å legge til transisjoner og tilstander kunne vi bygge opp tilstandsmaskinen til vi så at alle krav kunne tilfredsstilles med denne typen arkitektur. Dette gjorde at vi kunne oppdage eventuelle mangler i designet før vi begynte å implementere kode, noe som ga en trygghet om at arkitekturen ville fungere som tiltenkt.
-
+En av hovedfordelene med tilstandsmaskinen er at vi kunne sette opp et tilstandsdiagram som ga en veldig god oversikt over systemet. Ved å legge til transisjoner og tilstander kunne vi bygge opp tilstandsmaskinen til vi så at alle krav kunne tilfredsstilles med denne typen arkitektur. Dette gjorde at vi kunne oppdage eventuelle mangler i designet før vi begynte å implementere kode, noe som ga en trygghet om at arkitekturen ville fungere som tiltenkt. Figur \ref{fig:state_machine} viser systemets tilstander og transisjonene mellom disse.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{UML.png}
-    \caption{UML-diagram av heisens tilstandsmaskin}
+    \caption{Forenklet UML-diagram av heisens tilstandsmaskin}
     \label{fig:state_machine}
 \end{figure}
 

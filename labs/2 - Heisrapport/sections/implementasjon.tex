@@ -1,50 +1,51 @@
 \chapter{Implementasjon}
 Etter å ha definert arkitekturen og moduldesignen for heissystemet, gikk vi videre til implementasjonsfasen. Denne fasen innebar å omsette designet til fungerende kode og teste hver enkelt modul underveis for å sikre korrekt funksjonalitet.
 
-\section{Generell struktur (state machine)}
+\section{Generell struktur}
 Implementasjonen av heissystemet følger tilstandsmaskinarkitekturen som ble definert i arkitekturfasen. Hovedstrukturen består av en hovedløkke som kontinuerlig sjekker nåværende tilstand og kaller riktig tilstandsfunksjon. Hver tilstandsfunksjon utfører handlinger basert på systemets nåværende tilstand og returnerer den neste tilstanden.
 
 \begin{lstlisting}[style=cpp, caption=Hovedløkken i main-filen]
 int main() {
-    // Initialisering av hardware og tilstandsdata
-    hardware_init();
-    state_data data = {INIT_STATE, {{0}}, DIR_STOP};
+    state_data sData = {STANDING_STILL, {0}, CURRENT_DIR_DOWN};
 
-    // Hovedløkken
-    while (1) {
-        // Oppdater knapper og bestillinger
-        input_update_buttons(&data);
+    elevator_startup();
 
-        // Håndter nødstopp hvis aktivert
-        if (hardware_read_stop_signal()) {
-            data.state = EMERGENCY_STOP_STATE;
+    while(1){
+        //Floor sensor logic
+        floor = elevio_floorSensor();
+        if(floor >= 0){
+            elevio_floorIndicator(floor);
         }
+        
+        checkForInput(&sData);
 
-        // Kjør riktig tilstandsfunksjon basert på nåværende tilstand
-        switch (data.state) {
-            case INIT_STATE:
-                data = init_state_run(&data);
-                break;
-            case IDLE_STATE:
-                data = idle_state_run(&data);
-                break;
-            case MOVING_STATE:
-                data = moving_state_run(&data);
-                break;
-            case DOOR_OPEN_STATE:
-                data = door_open_state_run(&data);
-                break;
-            case EMERGENCY_STOP_STATE:
-                data = emergency_stop_state_run(&data);
-                break;
-            default:
-                fprintf(stderr, "Error: Ukjent tilstand\n");
-                hardware_command_movement(HARDWARE_MOVEMENT_STOP);
-                exit(1);
-                break;
+        switch (sData.state) {
+
+        case STANDING_STILL:
+            standing_still(&sData, floor);
+            break;
+
+        case DRIVING_UP:
+            driving(&sData, floor, DIRN_UP);
+            break;
+
+        case DRIVING_DOWN:
+            driving(&sData, floor, DIRN_DOWN);
+            break;
+            
+        case DOOR_OPEN:
+            door_open_state(&sData, floor);
+            break;
+
+        default:
+            printf("ERROR: Invalid state. ");
+            return -1;
+            break;
         }
+       
+        nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+
     }
-
     return 0;
 }
 \end{lstlisting}
@@ -52,8 +53,4 @@ int main() {
 Denne implementasjonen sørger for at heisen alltid er i en veldefinert tilstand, og at overganger mellom tilstander håndteres på en konsistent måte. Den sentraliserte datastrukturen \texttt{state\_data} fungerer som informasjonsbærer mellom tilstandene og inneholder all nødvendig informasjon for at hver tilstandsfunksjon kan ta riktige beslutninger.
 
 \section{Implementasjon og testing av hver enkelt modul}
-Under implementasjonsfasen fulgte vi en inkrementell tilnærming der hver modul ble testet før integrasjon med resten av systemet. Dette ga oss mulighet til å identifisere og korrigere feil tidlig i utviklingsprosessen.
-
-For hver tilstandsmodul kunne vi teste funksjonaliteten på den virkelige heisen slik at vi med høy tillit til hver enkelt modul kunne gå videre til integrasjonsfasen.  
-
-Tilsvarende testet vi inputmodulen med simulerte knappetrykk for å sikre at bestillinger ble riktig registrert og at lys ble riktig aktivert.
+Under implementasjonsfasen fulgte vi en inkrementell tilnærming der hver modul ble testet før integrasjon med resten av systemet. Dette ga oss mulighet til å identifisere og korrigere feil tidlig i utviklingsprosessen. For hver tilstandsmodul kunne vi teste funksjonaliteten på den virkelige heisen slik at vi med høy tillit til hver enkelt modul kunne gå videre til integrasjonsfasen. Tilsvarende testet vi inputmodulen med simulerte knappetrykk for å sikre at bestillinger ble riktig registrert og at lys ble riktig aktivert.

@@ -1,93 +1,22 @@
 \chapter{Refleksjon og vurdering}
 \section{Valg tatt i arkitekturfasen: Vellykket eller ikke?}
-I arkitekturfasen tok vi flere viktige valg som i stor grad påvirket prosjektets gjennomføring og resultat. Nå som prosjektet er ferdigstilt, kan vi evaluere om disse valgene var vellykkede.
+Valgene vi tok i arkitekturfasen vise seg stort sett å være gode for implementasjonen av prosjektet. Tilstandsmaskinen var en stor suksess og regelbasert behandling av bestillinger fungerte godt. 
 
-\textbf{Tilstandsmaskinen} som overordnet arkitektur viste seg å være et svært vellykket valg. Den ga oss et tydelig rammeverk for å håndtere heisens ulike tilstander og overganger mellom disse. Spesielt nyttig var det at vi definerte tilstandene tidlig og visualiserte dem med et UML-diagram. Dette ga oss et felles språk for å diskutere systemets oppførsel og gjorde implementasjonen mer forutsigbar. Når vi støtte på utfordringer under utviklingen, kunne vi enkelt referere til tilstandsdiagrammet for å avklare hvordan systemet skulle oppføre seg.
+Vi måtte tilbake å gjøre enderinger på designet når vi implementerte stop og obstruksjonsfuksjonaliteten. Vi fant blant annet ut at det ville være nyttig med et "door open" state, noe vi først ikke hadde forutsett. Alt i alt 
 
-\textbf{Regelbasert håndtering av bestillinger} i motsetning til et dynamisk køsystem var en avveining mellom enkelhet og optimal effektivitet. I ettertid ser vi at dette valget var riktig for vårt prosjekt. Det regelbaserte systemet var vesentlig enklere å implementere og teste, samtidig som det ga en intuitiv og forutsigbar oppførsel for heisen. Vi unngikk kompleksiteten som ville kommet med et dynamisk køsystem, og for en heis med få etasjer er effektivitetsgevinsten ved et avansert køsystem minimal.
+\section{Har V-modellen gjort prosjektet lettere?}
+V-modellen fungerte som et strukturert rammeverk for utviklingsprosessen vår, og bidro til en systematisk tilnærming til prosjektet. Av tidligere erfaring er det lett å bli overveldet av størrelsen på et problem, men ved å strukturert bryte det ned i moduler blir jobben mye mer overkommelig. 
 
-\textbf{Den sentraliserte datastrukturen} for å holde systemets tilstand viste seg å være et svært vellykket valg. Ved å samle all tilstandsinformasjon i en enkelt struktur som ble sendt til de ulike modulene, fikk vi et system som var enkelt å forstå, teste og feilsøke. Det ga også modulene en høy grad av uavhengighet, siden de ikke trengte å opprettholde sin egen interne tilstand. Hadde vi valgt en mer distribuert tilnærming med tilstand lagret i hver modul, ville systemet blitt mer komplekst og vanskeligere å feilsøke.
+En utfordring med V-modellen var at den kan virke noe rigid for et mindre prosjekt som dette. Design og planleggingsfasen var svært nyttige for implementasjonsfasen, men rigid enhetstesting synes vi ikke var spesielt nyttig. 
 
-Oppsummert var de viktigste arkitekturvalgene stort sett vellykkede, og ga et solid grunnlag for implementasjonen. De få utfordringene vi møtte skyldtes mer detaljspørsmål i implementasjonen enn fundamentale problemer med arkitekturen.
+\section{Forbedringer}
+rotete kode.
 
-\section{Hvordan V-modellen har styrt utviklingen}
-V-modellen fungerte som et strukturert rammeverk for utviklingsprosessen vår, og bidro til en systematisk tilnærming til prosjektet. Ved å følge denne modellen ble vi tvunget til å gjennomtenke systemet på ulike abstraksjonsnivåer før vi begynte implementasjonen.
-
-På venstre side av V-en startet vi med systemkrav og spesifikasjoner, hvor vi grundig gjennomgikk kravene til heissystemet. Dette ga oss en klar forståelse av hva systemet skulle gjøre. Deretter beveget vi oss nedover til arkitekturdesign, hvor vi definerte tilstandsmaskinen og de overordnede strukturene. Videre til moduldesign, hvor vi spesifiserte hvordan hver enkelt modul skulle fungere og samhandle med resten av systemet. Til slutt nådde vi implementasjonsfasen, hvor vi skrev koden for hver modul.
-
-På høyre side av V-en fulgte vi testfasene i motsatt rekkefølge. Vi begynte med enhetstesting av hver modul for seg, før vi beveget oss oppover til integrasjonstesting hvor modulene ble satt sammen og testet i samspill. Til slutt gjennomførte vi systemtesting for å verifisere at hele systemet fungerte i henhold til kravene.
-
-V-modellen hjalp oss særlig med å:
-\begin{itemize}
-    \item Holde fokus på testbarhet gjennom hele utviklingen
-    \item Oppdage designfeil tidlig i prosessen
-    \item Strukturere arbeidet i logiske faser
-    \item Sikre at hver komponent ble testet før integrering
-\end{itemize}
-
-En utfordring med V-modellen var at den kan virke noe rigid for et mindre prosjekt som dette. I praksis fant vi at vi ofte beveget oss frem og tilbake mellom fasene når vi oppdaget nye utfordringer eller hadde behov for å justere designet. Dette illustrerer at selv om V-modellen gir et godt rammeverk, må den anvendes med en viss fleksibilitet for å tilpasses prosjektets behov.
-
-\section{Hva som kunne vært gjort annerledes}
-Selv om prosjektet i stor grad var vellykket, ser vi flere områder hvor vi kunne gjort ting annerledes:
-
-\textbf{Mer formell testmetodikk:} Vi kunne med fordel ha utviklet en mer systematisk tilnærming til testing. Dette kunne inkludert automatiserte enhetstester for hver modul og mer strukturerte akseptansekriterier for systemtesting. En mer formell testprosess ville gjort det enklere å verifisere at systemet oppfyller alle krav, og ville gitt oss større sikkerhet for at systemet fungerer korrekt under alle forhold.
-
-\textbf{Bedre håndtering av kanttilfeller:} Selv om hovedfunksjonaliteten fungerer godt, kunne vi vært mer grundige i å identifisere og håndtere sjeldne, men potensielt problematiske situasjoner. For eksempel kunne vi hatt en mer robust strategi for hvordan systemet skal gjenopprette normal drift etter strømbrudd eller andre uventede hendelser.
-
-\textbf{Mer modulær kodestruktur:} Selv om vi hadde en god modulær tilnærming, kunne vi ha gått enda lenger i å isolere funksjonalitet i veldefinerte moduler med klare grensesnitt. Dette ville gjort det enklere å teste hver modul isolert og potensielt gjøre deler av koden gjenbrukbar for fremtidige prosjekter.
-
-\textbf{Tidligere integrering:} Vi kunne med fordel ha integrert modulene tidligere i utviklingsprosessen og dermed oppdaget integrasjonsproblemer på et tidligere tidspunkt. Dette ville redusert tiden brukt på feilsøking i senere faser.
-
-\section{Lærdom og erfaringer}
-Gjennom dette prosjektet har vi høstet verdifulle erfaringer og lærdom som vi kan ta med oss videre:
-
-\textbf{Viktigheten av god arkitektur:} Vi erfarte hvor avgjørende det er å ha en gjennomtenkt arkitektur før implementasjonen starter. Den tiden vi brukte på å designe tilstandsmaskinen og systemstrukturen, sparte vi mange ganger når vi skulle implementere og feilsøke.
-
-\textbf{Fordelen med tilstandsmaskin:} Vi lærte at tilstandsmaskiner er et kraftig verktøy for å modellere systemer med veldefinerte tilstander og overganger. Denne tilnærmingen gjorde systemet mer forutsigbart og enklere å implementere.
-
-\textbf{Verdi av inkrementell utvikling:} Ved å bygge systemet modul for modul og teste hver del grundig før integrering, reduserte vi kompleksiteten og gjorde feilsøking enklere. Denne inkrementelle tilnærmingen var særlig nyttig for å holde oversikt over fremgangen i prosjektet.
-
-\textbf{Utfordringer med realtidssystemer:} Heisstyring er et enkelt eksempel på et realtidssystem, og vi fikk erfaring med utfordringene slike systemer kan by på, som timing-problemer og håndtering av asynkrone hendelser.
-
-\textbf{Balanse mellom teori og praksis:} Vi opplevde at teoretiske modeller som V-modellen gir verdifull struktur, men må tilpasses praktiske realiteter. Utviklingsprosessen var sjelden så lineær som modellen antyder, og vi måtte ofte iterere og justere underveis.
 
 \section{Bruk av KI}
-I løpet av prosjektet eksperimenterte vi med bruk av KI-verktøy, spesielt store språkmodeller som ChatGPT og Claude, som støtte i utviklingsprosessen. Denne erfaringen ga oss verdifull innsikt i både mulighetene og begrensningene ved dagens KI-teknologi i programvareutvikling.
-
-\subsection{Hvor og hvordan vi brukte KI}
+I løpet av prosjektet eksperimenterte vi med bruk av KI-verktøy, spesielt store språkmodeller som ChatGPT og Claude, som støtte i utviklingsprosessen.
 Vi anvendte KI-verktøy primært i følgende områder:
 
-\textbf{Arkitekturdesign:} Vi brukte KI som sparringspartner for å diskutere ulike arkitekturvalg og deres fordeler og ulemper. Ved å formulere spørsmål om tilstandsmaskindesign og datastrukturer fikk vi alternative perspektiver som hjalp oss å evaluere valgene våre.
+\textbf{Kodegenerering:} For standardfunksjonalitet, modulimplementasjon og boilerplate-kode brukte vi KI til å generere utkast som vi deretter tilpasset, testet og forbedret. Dette reduserte tid brukt på rutineoppgaver.
 
-\textbf{Debugging:} Ved komplekse feil brukte vi KI til å analysere koden og foreslå potensielle årsaker til problemene. Dette var særlig nyttig ved subtile logikkfeil hvor en ny vinkling kunne hjelpe med å identifisere rotårsaken.
-
-\textbf{Kodegenerering:} For standardfunksjonalitet og boilerplate-kode brukte vi KI til å generere første utkast som vi deretter tilpasset og forbedret. Dette reduserte tid brukt på rutineoppgaver.
-
-\textbf{Dokumentasjon:} KI ble brukt til å assistere med generering av kommentarer og dokumentasjon, inkludert bidrag til denne rapporten.
-
-\subsection{Fordeler vi opplevde}
-\textbf{Økt produktivitet:} For visse oppgaver kunne KI-verktøy betydelig redusere tiden brukt på implementasjon og dokumentasjon, spesielt for mer rutinemessige deler av koden.
-
-\textbf{Alternative perspektiver:} KI ga ofte innspill og ideer som vi ikke hadde tenkt på, noe som beriket designdiskusjonene våre og førte til mer gjennomtenkte løsninger.
-
-\textbf{Læring:} Interaksjon med KI-verktøy eksponerte oss for alternative implementasjonsteknikker og mønster som utvidet vår egen kunnskap.
-
-\subsection{Utfordringer og begrensninger}
-\textbf{Manglende kontekstuell forståelse:} KI hadde begrenset forståelse av prosjektets helhet og kunne foreslå løsninger som ikke passet inn i vårt spesifikke kontekst eller arkitektur.
-
-\textbf{Overvurdering av kodekvalitet:} Vi måtte være kritiske til generert kode, da KI ofte produserte kode som så rimelig ut ved første øyekast, men kunne inneholde subtile feil eller ineffektive løsninger.
-
-\textbf{Avhengighet:} Det var en risiko for å bli for avhengig av KI-assistanse, noe som potensielt kunne redusere vår egen problemløsningsevne og læring.
-
-\subsection{Lærdom om KI i utviklingsprosessen}
-Gjennom prosjektet utviklet vi en mer nyansert forståelse av hvordan KI best kan integreres i utviklingsprosessen:
-
-\textbf{KI som verktøy, ikke erstatter:} KI fungerer best som et komplementært verktøy som støtter utviklerens egen tenkning og beslutningsprosess, ikke som en erstatter for menneskelig vurdering og problemløsning.
-
-\textbf{Verifisering er essensielt:} All KI-generert kode må grundig verifiseres og testes. Å forstå hvordan og hvorfor koden fungerer er avgjørende, selv når den er generert av KI.
-
-\textbf{Mest nyttig for veldefinerte oppgaver:} KI var mest verdifull for klart avgrensede og spesifikke oppgaver, mens mer komplekse arkitekturelle beslutninger fortsatt krevde menneskelig dømmekraft og erfaring.
-
-\textbf{Balanse mellom effektivitet og læring:} Vi måtte finne en balanse mellom å utnytte KI for økt effektivitet og samtidig sikre vår egen læring og forståelse av materialet.
-
-Oppsummert har KI-verktøy vist seg å være verdifulle ressurser i utviklingsprosessen når de brukes reflektert og med en klar forståelse av deres styrker og begrensninger. Vi forventer at slike verktøy vil spille en økende rolle i programvareutvikling fremover, men alltid som supplement til, ikke erstatning for, utviklernes egen kompetanse og dømmekraft.
+\textbf{Dokumentasjon:} KI ble brukt til å assistere med generering av kommentarer og dokumentasjon, inkludert bidrag til rapporten.

@@ -4,17 +4,10 @@ Dette prosjektet omfatter design, implementasjon og testing av et styresystem fo
 
 Prosjektet er gjennomført som en del av emnet TTK4235 - Tilpassede Datasystemer ved NTNU, der vi har benyttet C-programmering for å lage et heiskontrollsystem som kommuniserer med heismaskinvaren via en driver.
 
-\section{Mål og hensikt med rapporten}
-Hensikten med denne rapporten er å dokumentere utviklingsprosessen, arkitektur- og designvalg, samt implementasjonen av heisstyresystemet. Rapporten beskriver hvordan vi har benyttet V-modellen som rammeverk for utviklingen, og presenterer de valg og avveininger som er gjort underveis.
-
-Målet er å gi leseren en grundig forståelse av systemets oppbygning, funksjonalitet og testmetodikk, samt reflektere over prosessen og de erfaringer vi har gjort. Rapporten skal også fungere som en brukerveiledning for fremtidige brukere av systemet.
-
 \section{Kort om heismodellen og problemstillingen}
 Heismodellen i prosjektet er en enkel simulert heis med fire etasjer. Hver etasje har knapper for å bestille heisen opp eller ned (bortsett fra øverste og nederste etasje som bare har én retningsknapp hver), og inne i heisen finnes knapper for å velge destinasjonsetasje. I tillegg finnes det en stopknapp og en sensor som detekterer om noe blokkerer heisdøren.
 
 Hovedproblemstillingen i prosjektet er å utvikle et styresystem som effektivt håndterer alle bestillinger og feilsituasjoner på en måte som gir brukeren en intuitiv og pålitelig opplevelse. Systemet må ha kontroll på heisens posisjon, håndtere køen av bestillinger effektivt, og reagere korrekt på hendelser som stopknapp, obstruksjon i døren, og strømbrudd.
-
-Spesielt utfordrende er håndtering av uforutsette hendelser og sørge for at heisen aldri kommer i en uønsket tilstand. For eksempel må heisen alltid vite hvilken etasje den befinner seg i, og den må kunne gjenoppta normal drift etter en stopknapp er aktivert eller strømmen har vært borte.
 
 \section{Kort om bruk av V-modellen i utviklingsfasen}
 I dette prosjektet har vi benyttet en pragmatisk versjon av V-modellen som rammeverk for utviklingsprosessen. V-modellen illustrerer hvordan utviklingsfaser korresponderer med tilhørende testfaser, og danner en systematisk tilnærming til systemutvikling.

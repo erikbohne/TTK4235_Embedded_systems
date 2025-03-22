@@ -1,10 +1,43 @@
 \appendix
 \chapter{Appendiks}
-\section{Doxygen}
-% Innhold her
+Dette appendikset inneholder supplerende dokumentasjon og diagrammer som gir ytterligere detaljer om heisstyringssystemet.
+
+\input{sections/doxygen_appendix.tex}
 
 \section{Tilleggsdiagrammer}
-% Innhold her
+\subsection{Tilstandsdiagram}
+Her er et detaljert tilstandsdiagram for heisstyringssystemet:
 
-\section{Heisspesifikasjoner og kravspesifikasjon}
-% Innhold her
+\begin{figure}[H]
+    \centering
+    % Her skal det legges inn et bilde av tilstandsdiagrammet
+    \caption{Tilstandsdiagram for heisstyringssystemet}
+    \label{fig:state_diagram}
+\end{figure}
+
+Diagrammet illustrerer følgende hovedtilstander og overganger:
+\begin{itemize}
+    \item \textbf{DOOR\_OPEN}: Heisen står med åpen dør
+    \item \textbf{STANDING\_STILL}: Heisen står stille og venter på bestillinger
+    \item \textbf{DRIVING\_UP}: Heisen beveger seg oppover
+    \item \textbf{DRIVING\_DOWN}: Heisen beveger seg nedover
+\end{itemize}
+
+\subsection{Sekvensdiagram}
+Dette sekvensdiagrammet viser interaksjoner mellom systemkomponentene under typisk drift:
+
+\begin{figure}[H]
+    \centering
+    % Her skal det legges inn et bilde av sekvensdiagrammet
+    \caption{Sekvensdiagram for typisk drift}
+    \label{fig:sequence_diagram}
+\end{figure}
+
+Diagrammet illustrerer følgende hovedsekvenser:
+\begin{itemize}
+    \item Registrering av bestillinger
+    \item Beregning av retning
+    \item Bevegelse mellom etasjer
+    \item Håndtering av ankomst til etasje
+    \item Døråpning og -lukking
+\end{itemize}

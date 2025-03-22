@@ -1,27 +1,41 @@
 \chapter{Arkitekturdesign}
 
-Liten tekst her? 
+Arkitekturfasen er grunnlaget for hele heisprosjektet, hvor hovedoppgaven var å definere systemets overordnede struktur og organisering. I denne fasen måtte vi ta avgjørende valg som ville påvirke hele implementasjonen. Vi la vekt på å skape en arkitektur som var robust, oversiktlig og enkel å vedlikeholde.
 
 \section{Overordnet struktur}
-Den første og viktigeste delen av arbeidet gikk ut på å finne en struktur vi mente ville føre til en ryddig og enkel implementasjon av alle modulene. Ved å lese kravspesifikasjonen nøye og se på den grunnleggende vikemåten til heisen synes vi at en finite-state-machine (norsk?) viket som en god løsning. En av hovedfordelene med tilstandsmaskinen er at vi kunne sette opp et tildstandsmaskindiagramm og det det ga en veldig god oversikt over systemt. Ved å legge til transisjoner og states kunne vi bygge opp state machinen til vi så at alle krav kunne tilfredsstilles ved denne typen arkitektur. Vi ville derfor oppdaget om fremgangsmåten er tilstrekkelig før vi implementerer kode, og det gir en trygget om at arkitekturen kommer til å fungere. 
+Den første og viktigste delen av arbeidet gikk ut på å finne en struktur vi mente ville føre til en ryddig og enkel implementasjon av alle modulene. Ved å lese kravspesifikasjonen nøye og se på den grunnleggende virkemåten til heisen, kom vi frem til at en tilstandsmaskin (finite-state-machine) ville være en god løsning. 
 
-(uml diagram her)
+En av hovedfordelene med tilstandsmaskinen er at vi kunne sette opp et tilstandsdiagram som ga en veldig god oversikt over systemet. Ved å legge til transisjoner og tilstander kunne vi bygge opp tilstandsmaskinen til vi så at alle krav kunne tilfredsstilles med denne typen arkitektur. Dette gjorde at vi kunne oppdage eventuelle mangler i designet før vi begynte å implementere kode, noe som ga en trygghet om at arkitekturen ville fungere som tiltenkt. Figur \ref{fig:state_machine} viser systemets tilstander og transisjonene mellom disse.
 
-\section{Behndling av bestillinger}
-Den neste probemstillingen handlet om hvordan vi skulle lagre og behandle bestillingene fra heisplanelet. I utgnagspunktet sto valget mellom et dynamisk køsystem og et regelbasert system hvor heisen i hver etasjen tar en beslutning om hvor den skal kjøre. Det dynamiske køsystemet viket komplekst uten å gi noe stor gevinst, særlig fordi nye bestillingere fører til en reorganisering av hele køen.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{UML.png}
+    \caption{Forenklet UML-diagram av heisens tilstandsmaskin}
+    \label{fig:state_machine}
+\end{figure}
 
-Det regelbaserte systemet fungerer ved å ha kontroll på hvilken vei heisen kjører og hvile etasjer som har bestillinger. I utgangspunktet kjører bare heisen opp og ned og tar med seg de som skal være med videre. I tillegg ignorerer den bestillinger motsatt veg, og tar med de på veg ned isteden.
+\section{Behandling av bestillinger}
+Den neste problemstillingen handlet om hvordan vi skulle lagre og behandle bestillingene fra heispanelet. I utgangspunktet sto valget mellom et dynamisk køsystem og et regelbasert system hvor heisen i hver etasje tar en beslutning om hvor den skal kjøre. Det dynamiske køsystemet virket komplekst uten å gi noen stor gevinst, særlig fordi nye bestillinger fører til en reorganisering av hele køen.
+
+Det regelbaserte systemet vi valgte fungerer ved å ha kontroll på hvilken vei heisen kjører og hvilke etasjer som har bestillinger. Systemet følger disse hovedprinsippene:
+\begin{itemize}
+    \item Heisen fortsetter i samme retning så lenge det finnes bestillinger i den retningen
+    \item Den betjener alle bestillinger i gjeldende retning før den endrer retning
+    \item Bestillinger i motsatt retning ignoreres midlertidig og tas med på returen
+\end{itemize}
+
 
 \section{Håndtering av data}
-Siste seg i arkitekturfasen var å finne ut hvordan vi skal senda data rundt i applikasjonen. Mer spesifikt handler dette om heisens retning, hvilke knapper som er trykket og hvilke state maskinen er i. Dette ble løst ved å oppbevare all data i en struck i main filen. Alle state moduelene lagrer ikke noe mellom hver itterasjon av programmet. Det blir da lettere å teste ettersom hver state funksjon kun avhenger av argumentene og mindre utsatt for feil. 
+Siste steg i arkitekturfasen var å finne ut hvordan vi skulle sende data rundt i applikasjonen. Mer spesifikt handler dette om heisens retning, hvilke knapper som er trykket og hvilken tilstand maskinen er i. 
 
-\begin{lstlisting}[style=cpp, caption=The data struct passed to each state.]
+Dette ble løst ved å oppbevare all data i en struktur i hovedfilen vist i \ref{lst:state_data}.  Ingen av tilstandsmodulene lagrer informasjon mellom hver iterasjon av programmet. De får i stedet overlevert systemets nåværende tilstand som en parameter og returnerer den nye tilstanden.
 
+\begin{lstlisting}[style=cpp, caption=Datastrukturen som sendes til hver tilstandsfunksjon,  label={lst:state_data}]
 typedef struct state_data {
-    State state;
-    int btnStates[4][3];
-    Direction dir;
+    State state;       // Nåværende tilstand
+    int btnStates[4][3]; // Knappetrykk i hver etasje og retning
+    Direction dir;     // Nåværende retning
 } state_data;
-
 \end{lstlisting}
+
 

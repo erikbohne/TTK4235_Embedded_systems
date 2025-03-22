@@ -11,7 +11,8 @@
 \usepackage{geometry}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
-\usepackage{lipsum} % Dummy text
+\usepackage{listings}
+\usepackage{xcolor}  % For syntax highlighting in listings package
 
 \geometry{margin=1in}
 
@@ -21,9 +22,24 @@
 \rhead{\thepage}
 \lhead{TTK4235 - Embedded Systems}
 
-% Title Page
+\lstdefinestyle{cpp}{
+    language=C++,
+    basicstyle=\ttfamily\footnotesize,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    breaklines=true,
+    tabsize=4,
+    showstringspaces=false
+}
+
+
 \begin{document}
 
+% Title Page
 \begin{titlepage}
     \centering
     \vspace*{3cm}
@@ -32,21 +48,28 @@
     
     \Huge Department of Engineering Cybernetics\\[1cm]
     
-    \LARGE TTK4235 - Embedded Systems\\[1.5cm]
+    \LARGE TTK4235 - Tilpassede Datasystemer\\[1.5cm]
     
-    \Huge \textbf{Heislabb}\\[2cm]
+    \Huge \textbf{Heislabb Gruppe 46}\\[2cm]
     
-    \Large Author: Erik Bohne og Lars Lien\\[1cm]
+    \Large Erik Bohne og Lars Lien\\[1cm]
     
     \Large \today
     
     \vfill
 \end{titlepage}
 
-% TOC, LOF, LOT
+% Viktig for spesialkarakterer i kode boksene.
+\lstset{
+  literate={ø}{{\o}}1
+           {å}{{\aa}}1
+           {æ}{{\ae}}1
+           {Ø}{{\O}}1
+           {Å}{{\AA}}1
+           {Æ}{{\AE}}1
+}
+
 \tableofcontents
-\listoffigures
-\listoftables
 \clearpage
 
 % Sections from separate files
@@ -54,8 +77,6 @@
 \input{sections/arkitekturdesign.tex}
 \input{sections/moduldesign.tex}
 \input{sections/implementasjon.tex}
-\input{sections/test_verifikasjon.tex}
-\input{sections/brukerveiledning.tex}
 \input{sections/refleksjon_vurdering.tex}
 \input{sections/konklusjon.tex}
 

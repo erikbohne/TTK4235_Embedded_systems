@@ -1,9 +1,13 @@
 \chapter{Moduldesign}
-\section{If/else og spesifikasjon/krav}
-% Innhold her
 
-\section{Forklare hvordan de ulike modulene fungerer}
-% Innhold her
+\section{Startup modul}
+Startupmoduelen har som oppgave å sende heisen til en definert posisjon ved oppstart. Den ingnorerer forespørsler og kjører ned til den kommer til en etsaje. Modulen kjører bare ved oppstart uavhenging av resten av programmet og bvar derfor lett å teste.
 
-\section{Snakke om bruk av KI}
-% Innhold her
+\section{Input modul}
+Input modulen kjører en gang hver syklus og har som jobb behandle heislys og knappepanelet med unntak av stop og obstruksjonsknappen. Den første funskjonen lagrer nye knappetrykk i data strukturen og setter lys. Den andre funskjonen kalles når en etasje er besøkt. Den fjerner knappen fra data strukturen og slukker tilsvarende lys. 
+
+Den store fordelen med denne modulen er at den abstaherer vekk logikken med å endre knappestaus. Ved å bruke fuksjonene vil alltid etasjelys og data stemme overens og sjensen for å gjøre en feil i de andre modulene blir kraftig redusert. 
+
+\section{State moduler}
+De største delen av programmet er de ulike state modulene. Oversikten over disse moduelne og hvordan de hanger sammen kan du se i Figur \ref{fig:state_machine} På generelt grunnlag bstår implementasjonen i hovedsak av if statments som sammsvarer til spesifikasjonene fra oppgaven.
+

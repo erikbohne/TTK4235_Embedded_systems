@@ -1,12 +1,32 @@
 \chapter{Introduksjon}
 \section{Kort beskrivelse av prosjektet}
-% Innhold her
+Dette prosjektet omfatter design, implementasjon og testing av et styresystem for en heis. Oppgaven går ut på å lage et program som kontrollerer en heismodell på en robust og pålitelig måte. Programmet må håndtere bevegelse mellom etasjer, bestillinger fra både inne i heisen og i hver etasje, samt ulike feilsituasjoner som kan oppstå under drift.
 
-\section{Mål og hensikt med rapporten}
-% Innhold her
+Prosjektet er gjennomført som en del av emnet TTK4235 - Tilpassede Datasystemer ved NTNU, der vi har benyttet C-programmering for å lage et heiskontrollsystem som kommuniserer med heismaskinvaren via en driver.
 
 \section{Kort om heismodellen og problemstillingen}
-% Innhold her
+Heismodellen i prosjektet er en enkel simulert heis med fire etasjer. Hver etasje har knapper for å bestille heisen opp eller ned (bortsett fra øverste og nederste etasje som bare har én retningsknapp hver), og inne i heisen finnes knapper for å velge destinasjonsetasje. I tillegg finnes det en stopknapp og en sensor som detekterer om noe blokkerer heisdøren.
+
+Hovedproblemstillingen i prosjektet er å utvikle et styresystem som effektivt håndterer alle bestillinger og feilsituasjoner på en måte som gir brukeren en intuitiv og pålitelig opplevelse. Systemet må ha kontroll på heisens posisjon, håndtere køen av bestillinger effektivt, og reagere korrekt på hendelser som stopknapp, obstruksjon i døren, og strømbrudd.
 
 \section{Kort om bruk av V-modellen i utviklingsfasen}
-% Innhold her
+I dette prosjektet har vi benyttet en pragmatisk versjon av V-modellen som rammeverk for utviklingsprosessen. V-modellen illustrerer hvordan utviklingsfaser korresponderer med tilhørende testfaser, og danner en systematisk tilnærming til systemutvikling.
+
+På venstre side av V-en har vi nedbrytingsfasene:
+\begin{itemize}
+    \item Systemkrav og spesifikasjoner
+    \item Arkitekturdesign
+    \item Moduldesign
+    \item Implementasjon
+\end{itemize}
+
+På høyre side av V-en har vi testfasene:
+\begin{itemize}
+    \item Enhetstesting
+    \item Integrasjonstesting
+    \item Systemtesting
+\end{itemize}
+
+Ved å følge denne modellen har vi først brutt ned systemet i mindre komponenter og deretter implementert og testet hver komponent før de ble integrert til et helhetlig system. Dette har gitt oss en strukturert tilnærming til utviklingen og gjort det enklere å sikre at alle krav blir oppfylt.
+
+I senere kapitler vil vi diskutere hvordan denne modellen har påvirket våre valg og reflektere over hvor godt den har fungert for dette prosjektet.

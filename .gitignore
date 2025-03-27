@@ -73,7 +73,7 @@ dkms.conf
 *.snm
 
 # Optional: Ignore PDFs - Nice å ha denne når vi nærmer oss ferdig. Kan kommentere ut i en av de siste commits. 
-*.pdf
+# *.pdf
 
 # Editor config (optional)
 .vscode/

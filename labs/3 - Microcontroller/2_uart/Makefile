@@ -1,5 +1,5 @@
 FAMILY := nrf52
-SOURCES := main.c # Fill inn missing sources
+SOURCES := main.c uart.c # Fill inn missing sources
 
 BUILD_DIR := build
 BUILD_SYS := .build_system

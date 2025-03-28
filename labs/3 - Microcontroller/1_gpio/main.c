@@ -21,14 +21,14 @@ void button_init(){
 	GPIO->PIN_CNF[13] = (3 << 2); // Set button 1 to input
 	GPIO->PIN_CNF[14] = (3 << 2); // Set button 2 to input
 
-	GPIO->PIN_CNF[17] = (0 << 0); // Set LED 1 to output
-	GPIO->PIN_CNF[18] = (0 << 0); // Set LED 2 to output
-	GPIO->PIN_CNF[19] = (0 << 0); // Set LED 3 to output
-	GPIO->PIN_CNF[20] = (0 << 0); // Set LED 4 to output
+	GPIO->PIN_CNF[17] = (1 << 0); // Set LED 1 to output
+	GPIO->PIN_CNF[18] = (1 << 0); // Set LED 2 to output
+	GPIO->PIN_CNF[19] = (1 << 0); // Set LED 3 to output
+	GPIO->PIN_CNF[20] = (1 << 0); // Set LED 4 to output
 }
 
 int main(){
-	// Configure LED Matrix
+	// Configure LED Matrix - TODO: Hva søren gjør de her?
 	for(int i = 17; i <= 20; i++){
 		GPIO->DIRSET = (1 << i);
 		GPIO->OUTCLR = (1 << i);
@@ -41,7 +41,7 @@ int main(){
 	while(1){
 
 		/* Check if button 1 is pressed;
-		 * turn on LED matrix if it is. */
+		 * turn on LED matrix if it is. */ 
 		if (!(GPIO->IN & (1 << 13))) {
 			// Turn on LED matrix: clear LED outputs (active low -> LED on)
 			for (int i = 17; i <= 20; i++) {
@@ -49,9 +49,14 @@ int main(){
 			}
 		}
 
-
 		/* Check if button 2 is pressed;
 		 * turn off LED matrix if it is. */
+		 if (!(GPIO->IN & (1 << 14))) {
+			// Turn on LED matrix: clear LED outputs (active low -> LED on)
+			for (int i = 17; i <= 20; i++) {
+				GPIO->OUTSET = (1 << i);
+			}
+		}
 
 		sleep = 10000;
 		while(--sleep); // Delay
